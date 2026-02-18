@@ -1,14 +1,23 @@
 package com.ragchat.model;
 
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name = "documents")
 public class DocumentInfo {
+
+    @Id
     private String id;
+
     private String name;
     private String type;
     private long size;
     private int totalChunks;
+
+    @Column(name = "conversation_id")
     private String conversationId;
+
     private LocalDateTime uploadedAt;
     private String status;
 

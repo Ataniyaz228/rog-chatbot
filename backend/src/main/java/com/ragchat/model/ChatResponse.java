@@ -24,19 +24,23 @@ public class ChatResponse {
 
     public static class SourceReference {
         private String documentName;
+        private String section;
         private String snippet;
         private double relevanceScore;
 
         public SourceReference() {}
 
-        public SourceReference(String documentName, String snippet, double relevanceScore) {
+        public SourceReference(String documentName, String section, String snippet, double relevanceScore) {
             this.documentName = documentName;
+            this.section = section;
             this.snippet = snippet;
             this.relevanceScore = relevanceScore;
         }
 
         public String getDocumentName() { return documentName; }
         public void setDocumentName(String documentName) { this.documentName = documentName; }
+        public String getSection() { return section; }
+        public void setSection(String section) { this.section = section; }
         public String getSnippet() { return snippet; }
         public void setSnippet(String snippet) { this.snippet = snippet; }
         public double getRelevanceScore() { return relevanceScore; }

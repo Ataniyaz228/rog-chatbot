@@ -2,6 +2,7 @@ package com.ragchat.service;
 
 import com.ragchat.model.DocumentChunk;
 import com.ragchat.model.DocumentInfo;
+import com.ragchat.repository.DocumentInfoRepository;
 import com.ragchat.util.DocumentParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,14 +21,14 @@ public class DocumentService {
     private final DocumentParser documentParser;
     private final EmbeddingService embeddingService;
     private final VectorStoreService vectorStoreService;
+    private final DocumentInfoRepository documentInfoRepository;
 
-    private final Map<String, DocumentInfo> documents = new ConcurrentHashMap<>();
-    private final Map<String, List<String>> conversationDocuments = new ConcurrentHashMap<>();
-
-    public DocumentService(DocumentParser documentParser, EmbeddingService embeddingService, VectorStoreService vectorStoreService) {
+    public DocumentService(DocumentParser documentParser, EmbeddingService embeddingService, 
+                           VectorStoreService vectorStoreService, DocumentInfoRepository documentInfoRepository) {
         this.documentParser = documentParser;
         this.embeddingService = embeddingService;
         this.vectorStoreService = vectorStoreService;
+        this.documentInfoRepository = documentInfoRepository;
     }
 
     public DocumentInfo uploadDocument(MultipartFile file, String conversationId) {
@@ -43,60 +44,57 @@ public class DocumentService {
         docInfo.setUploadedAt(LocalDateTime.now());
         docInfo.setStatus("PROCESSING");
 
-        documents.put(documentId, docInfo);
-        conversationDocuments.computeIfAbsent(conversationId, k -> Collections.synchronizedList(new ArrayList<>()))
-                .add(documentId);
+        documentInfoRepository.save(docInfo);
 
         try {
-            String text = documentParser.extractText(file);
-            log.info("Extracted {} characters from document: {}", text.length(), fileName);
+            String fullText = documentParser.extractText(file);
+            log.info("Extracted {} characters from document: {}", fullText.length(), fileName);
 
-            List<String> chunks = documentParser.splitIntoChunks(text);
+            List<Map.Entry<String, String>> chunks = documentParser.splitIntoSectionedChunks(fullText);
             log.info("Split into {} chunks", chunks.size());
 
             for (int i = 0; i < chunks.size(); i++) {
-                String chunkText = chunks.get(i);
-                double[] embedding = embeddingService.embed(chunkText);
+                Map.Entry<String, String> entry = chunks.get(i);
+                String section = entry.getKey();
+                String content = entry.getValue();
 
                 DocumentChunk chunk = new DocumentChunk();
                 chunk.setId(UUID.randomUUID().toString());
                 chunk.setDocumentId(documentId);
                 chunk.setDocumentName(fileName);
-                chunk.setContent(chunkText);
+                chunk.setContent(content);
+                chunk.setSection(section); // Save the detected section
                 chunk.setChunkIndex(i);
-                chunk.setEmbedding(embedding);
+                chunk.setConversationId(conversationId);
+                chunk.setEmbedding(embeddingService.embed(content));
 
                 vectorStoreService.addChunk(conversationId, chunk);
             }
-
+        
             docInfo.setTotalChunks(chunks.size());
             docInfo.setStatus("READY");
+            documentInfoRepository.save(docInfo); // Update status
             log.info("Document processed successfully: {} ({} chunks)", fileName, chunks.size());
 
         } catch (Exception e) {
             log.error("Failed to process document: {}", fileName, e);
             docInfo.setStatus("ERROR");
+            documentInfoRepository.save(docInfo); // Update status
         }
 
         return docInfo;
     }
 
     public List<DocumentInfo> getDocuments(String conversationId) {
-        List<String> docIds = conversationDocuments.getOrDefault(conversationId, Collections.emptyList());
-        return docIds.stream()
-                .map(documents::get)
-                .filter(Objects::nonNull)
-                .toList();
+        return documentInfoRepository.findByConversationId(conversationId);
     }
 
     public void deleteDocument(String documentId) {
-        DocumentInfo docInfo = documents.remove(documentId);
-        if (docInfo != null) {
+        Optional<DocumentInfo> docInfoOpt = documentInfoRepository.findById(documentId);
+        if (docInfoOpt.isPresent()) {
+            DocumentInfo docInfo = docInfoOpt.get();
             vectorStoreService.removeDocument(docInfo.getConversationId(), documentId);
-            List<String> docIds = conversationDocuments.get(docInfo.getConversationId());
-            if (docIds != null) {
-                docIds.remove(documentId);
-            }
+            documentInfoRepository.deleteById(documentId);
         }
     }
 }

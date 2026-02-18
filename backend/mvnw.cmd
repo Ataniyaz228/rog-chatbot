@@ -21,11 +21,13 @@
 @echo off
 
 @REM Set the current directory to the location of this script
-set WRAPPER_DIR=%~dp0
-set WRAPPER_JAR="%WRAPPER_DIR%\.mvn\wrapper\maven-wrapper.jar"
-set WRAPPER_PROPERTIES="%WRAPPER_DIR%\.mvn\wrapper\maven-wrapper.properties"
-set WRAPPER_URL="https://repo.maven.apache.org/maven2/org/apache/maven/wrapper/maven-wrapper/3.2.0/maven-wrapper-3.2.0.jar"
-set MAVEN_PROJECTBASEDIR=%WRAPPER_DIR%
+set "WRAPPER_DIR=%~dp0"
+@REM Remove trailing backslash to prevent escaping quotes
+if "%WRAPPER_DIR:~-1%"=="\" set "WRAPPER_DIR=%WRAPPER_DIR:~0,-1%"
+set "WRAPPER_JAR=%WRAPPER_DIR%\.mvn\wrapper\maven-wrapper.jar"
+set "WRAPPER_PROPERTIES=%WRAPPER_DIR%\.mvn\wrapper\maven-wrapper.properties"
+set "WRAPPER_URL=https://repo.maven.apache.org/maven2/org/apache/maven/wrapper/maven-wrapper/3.2.0/maven-wrapper-3.2.0.jar"
+set "MAVEN_PROJECTBASEDIR=%WRAPPER_DIR%"
 
 @REM Find java.exe
 if defined JAVA_HOME goto findJavaFromJavaHome
@@ -58,19 +60,19 @@ goto error
 
 :execute
 @REM Download maven-wrapper.jar if it doesn't exist
-if exist %WRAPPER_JAR% goto runMaven
+if exist "%WRAPPER_JAR%" goto runMaven
 
 echo Downloading Maven Wrapper...
 powershell -Command "(New-Object Net.WebClient).DownloadFile('%WRAPPER_URL%', '%WRAPPER_JAR%')" >NUL 2>&1
 if "%ERRORLEVEL%" NEQ "0" (
     echo Failed to download Maven Wrapper. Trying with curl...
-    curl -o %WRAPPER_JAR% %WRAPPER_URL%
+    curl -o "%WRAPPER_JAR%" "%WRAPPER_URL%"
 )
 
 :runMaven
 @REM Run Maven via the wrapper
 "%JAVA_EXE%" ^
-  -classpath %WRAPPER_JAR% ^
+  -classpath "%WRAPPER_JAR%" ^
   "-Dmaven.multiModuleProjectDirectory=%MAVEN_PROJECTBASEDIR%" ^
   org.apache.maven.wrapper.MavenWrapperMain ^
   %*

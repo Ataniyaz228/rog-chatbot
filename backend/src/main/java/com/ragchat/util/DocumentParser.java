@@ -10,13 +10,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class DocumentParser {
 
     private final Tika tika = new Tika();
 
-    @Value("${rag.chunk-size:500}")
+    @Value("${rag.chunk-size:200}")
     private int chunkSize;
 
     @Value("${rag.chunk-overlap:50}")
@@ -32,21 +33,59 @@ public class DocumentParser {
     }
 
     /**
-     * Splits text into overlapping chunks for embedding.
+     * Splits text into pieces, attempting to detect sections.
+     * Returns a list of Map.Entry<SectionName, ContentChunk>
      */
-    public List<String> splitIntoChunks(String text) {
-        List<String> chunks = new ArrayList<>();
+    public List<Map.Entry<String, String>> splitIntoSectionedChunks(String text) {
+        List<Map.Entry<String, String>> chunks = new ArrayList<>();
         if (text == null || text.isBlank()) {
             return chunks;
         }
 
-        // Normalize whitespace
-        text = text.replaceAll("\\s+", " ").trim();
+        // 1. Split into lines to find headers
+        String[] lines = text.split("\\r?\\n");
+        String currentSection = "Introduction"; // Default section
+        StringBuilder currentBuffer = new StringBuilder();
 
+        for (String line : lines) {
+            String trimmed = line.trim();
+            if (trimmed.isEmpty()) continue;
+
+            // Simple heuristic for headers:
+            // - Short (under 60 chars)
+            // - Starts with number, or is all UPPERCASE, or doesn't end with punctuation
+            boolean isHeader = trimmed.length() < 60 && 
+                               (trimmed.matches("^\\d+\\..*") || 
+                                trimmed.matches("^[A-ZА-Я0-9\\s\\-]+$") || 
+                                !trimmed.matches(".*[.!?]$"));
+
+            if (isHeader) {
+                // If we have content in the buffer, save it with the OLD section
+                if (currentBuffer.length() > 0) {
+                    processBufferToChunks(currentBuffer.toString(), currentSection, chunks);
+                    currentBuffer.setLength(0);
+                }
+                // Update current section to new header
+                currentSection = trimmed;
+            } else {
+                if (currentBuffer.length() > 0) currentBuffer.append(" ");
+                currentBuffer.append(trimmed);
+            }
+        }
+
+        // Process remaining buffer
+        if (currentBuffer.length() > 0) {
+            processBufferToChunks(currentBuffer.toString(), currentSection, chunks);
+        }
+
+        return chunks;
+    }
+
+    private void processBufferToChunks(String text, String section, List<Map.Entry<String, String>> chunks) {
         String[] words = text.split("\\s+");
         if (words.length <= chunkSize) {
-            chunks.add(text);
-            return chunks;
+            chunks.add(Map.entry(section, text));
+            return;
         }
 
         int step = chunkSize - chunkOverlap;
@@ -57,10 +96,8 @@ public class DocumentParser {
                 if (j > i) chunk.append(" ");
                 chunk.append(words[j]);
             }
-            chunks.add(chunk.toString());
+            chunks.add(Map.entry(section, chunk.toString()));
             if (end == words.length) break;
         }
-
-        return chunks;
     }
 }

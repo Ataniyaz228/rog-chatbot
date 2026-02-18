@@ -1,27 +1,29 @@
 package com.ragchat.model;
 
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(name = "conversations")
 public class Conversation {
+
+    @Id
     private String id;
+
     private String title;
+
+    @Transient // Not stored in DB directly here, handled by Repository
     private List<Message> messages = new ArrayList<>();
+
+    @Transient // Source of truth is DocumentInfoRepository (documents table)
     private List<String> documentIds = new ArrayList<>();
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     public Conversation() {}
-
-    public Conversation(String id, String title, List<Message> messages, List<String> documentIds, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.id = id;
-        this.title = title;
-        this.messages = messages != null ? messages : new ArrayList<>();
-        this.documentIds = documentIds != null ? documentIds : new ArrayList<>();
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-    }
 
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
@@ -36,6 +38,7 @@ public class Conversation {
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 
+    // DTO class for API response compatibility
     public static class Message {
         private String role;
         private String content;

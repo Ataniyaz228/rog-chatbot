@@ -7,17 +7,18 @@ import com.ragchat.model.ChatRequest;
 import com.ragchat.model.ChatResponse;
 import com.ragchat.model.Conversation;
 import com.ragchat.model.DocumentChunk;
+import com.ragchat.repository.ConversationRepository;
+import com.ragchat.repository.MessageRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
-
 @Service
 public class ChatService {
 
@@ -27,15 +28,22 @@ public class ChatService {
     private final RestTemplate restTemplate;
     private final EmbeddingService embeddingService;
     private final VectorStoreService vectorStoreService;
+    private final DocumentService documentService;
+    private final ConversationRepository conversationRepository;
+    private final MessageRepository messageRepository;
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final Map<String, Conversation> conversations = new ConcurrentHashMap<>();
 
     public ChatService(GeminiConfig config, RestTemplate restTemplate,
-                       EmbeddingService embeddingService, VectorStoreService vectorStoreService) {
+                       EmbeddingService embeddingService, VectorStoreService vectorStoreService,
+                       DocumentService documentService,
+                       ConversationRepository conversationRepository, MessageRepository messageRepository) {
         this.config = config;
         this.restTemplate = restTemplate;
         this.embeddingService = embeddingService;
         this.vectorStoreService = vectorStoreService;
+        this.documentService = documentService;
+        this.conversationRepository = conversationRepository;
+        this.messageRepository = messageRepository;
     }
 
     public ChatResponse chat(ChatRequest request) {
@@ -44,26 +52,26 @@ public class ChatService {
             conversationId = UUID.randomUUID().toString();
         }
 
-        Conversation conversation = conversations.computeIfAbsent(conversationId, id -> {
-            Conversation c = new Conversation();
-            c.setId(id);
-            c.setTitle(request.getMessage().length() > 50
-                    ? request.getMessage().substring(0, 50) + "..."
-                    : request.getMessage());
-            c.setMessages(new ArrayList<>());
-            c.setDocumentIds(new ArrayList<>());
-            c.setCreatedAt(LocalDateTime.now());
-            c.setUpdatedAt(LocalDateTime.now());
-            return c;
-        });
+        String finalConversationId = conversationId;
+        Conversation conversation = conversationRepository.findById(conversationId)
+                .orElseGet(() -> {
+                    Conversation c = new Conversation();
+                    c.setId(finalConversationId);
+                    c.setTitle(request.getMessage().length() > 50
+                            ? request.getMessage().substring(0, 50) + "..."
+                            : request.getMessage());
+                    c.setCreatedAt(LocalDateTime.now());
+                    c.setUpdatedAt(LocalDateTime.now());
+                    return conversationRepository.save(c);
+                });
 
-        Conversation.Message userMsg = new Conversation.Message();
-        userMsg.setRole("user");
-        userMsg.setContent(request.getMessage());
-        userMsg.setTimestamp(LocalDateTime.now());
-        conversation.getMessages().add(userMsg);
+        // Save User Message
+        com.ragchat.model.MessageEntity userMsgEntity = new com.ragchat.model.MessageEntity(
+                conversationId, "user", request.getMessage(), null, LocalDateTime.now()
+        );
+        messageRepository.save(userMsgEntity);
 
-        // Only embed the query if there are documents to search against
+        // Vector Search
         List<DocumentChunk> relevantChunks = Collections.emptyList();
         Map<String, Double> scores = Collections.emptyMap();
         int chunkCount = vectorStoreService.getChunkCount(conversationId);
@@ -76,31 +84,58 @@ public class ChatService {
 
         final Map<String, Double> finalScores = scores;
 
-        String context = relevantChunks.stream()
-                .map(chunk -> String.format("[Document: %s]\n%s", chunk.getDocumentName(), chunk.getContent()))
-                .collect(Collectors.joining("\n\n---\n\n"));
+        // Limit context to ~3000 chars to stay within Groq token limits
+        StringBuilder contextBuilder = new StringBuilder();
+        for (DocumentChunk chunk : relevantChunks) {
+            String entry = String.format("[Document: %s]\n%s", chunk.getDocumentName(), chunk.getContent());
+            
+            if (contextBuilder.length() + entry.length() > 3000) {
+                // If context is still empty (first chunk is too big), truncate and add it
+                if (contextBuilder.isEmpty()) {
+                    contextBuilder.append(entry.substring(0, Math.min(entry.length(), 3000)));
+                }
+                break; // Stop adding more chunks
+            }
+            
+            if (!contextBuilder.isEmpty()) contextBuilder.append("\n\n---\n\n");
+            contextBuilder.append(entry);
+        }
+        String context = contextBuilder.toString();
+
+        // Fetch history for context
+        List<com.ragchat.model.MessageEntity> historyEntities = messageRepository.findByConversationIdOrderByTimestampAsc(conversationId);
+        List<Conversation.Message> history = historyEntities.stream()
+                .map(e -> new Conversation.Message(e.getRole(), e.getContent(), e.getSources(), e.getTimestamp()))
+                .toList();
+
+        // Generate Answer FIRST so we can use it for smart snippets
+        String answer = generateAnswerWithRetry(request.getMessage(), context, history);
 
         List<ChatResponse.SourceReference> sources = relevantChunks.stream()
                 .map(chunk -> {
                     ChatResponse.SourceReference ref = new ChatResponse.SourceReference();
                     ref.setDocumentName(chunk.getDocumentName());
-                    ref.setSnippet(chunk.getContent().length() > 150
-                            ? chunk.getContent().substring(0, 150) + "..."
-                            : chunk.getContent());
+                    ref.setSection(chunk.getSection()); // Include section in source
+                    
+                    // Generate smart snippet using BOTH query and the generated answer
+                    String searchContext = request.getMessage() + " " + answer;
+                    String snippet = generateSmartSnippet(chunk.getContent(), searchContext);
+                    ref.setSnippet(snippet);
+                    
                     ref.setRelevanceScore(finalScores.getOrDefault(chunk.getId(), 0.0));
                     return ref;
                 })
                 .toList();
 
-        String answer = generateAnswer(request.getMessage(), context, conversation.getMessages());
+        // Save Assistant Message
+        com.ragchat.model.MessageEntity assistantMsgEntity = new com.ragchat.model.MessageEntity(
+                conversationId, "assistant", answer, sources, LocalDateTime.now()
+        );
+        messageRepository.save(assistantMsgEntity);
 
-        Conversation.Message assistantMsg = new Conversation.Message();
-        assistantMsg.setRole("assistant");
-        assistantMsg.setContent(answer);
-        assistantMsg.setSources(sources);
-        assistantMsg.setTimestamp(LocalDateTime.now());
-        conversation.getMessages().add(assistantMsg);
+        // Update Conversation Timestamp
         conversation.setUpdatedAt(LocalDateTime.now());
+        conversationRepository.save(conversation);
 
         ChatResponse response = new ChatResponse();
         response.setAnswer(answer);
@@ -110,20 +145,153 @@ public class ChatService {
     }
 
     public List<Conversation> getConversations() {
-        return conversations.values().stream()
-                .sorted((a, b) -> b.getUpdatedAt().compareTo(a.getUpdatedAt()))
-                .toList();
+        List<Conversation> convs = conversationRepository.findAllByOrderByUpdatedAtDesc();
+        // Populate messages for each conversation so the frontend shows correct counts/previews
+        convs.forEach(c -> {
+            List<com.ragchat.model.MessageEntity> msgEntities = messageRepository.findByConversationIdOrderByTimestampAsc(c.getId());
+            List<Conversation.Message> messages = msgEntities.stream()
+                    .map(e -> new Conversation.Message(e.getRole(), e.getContent(), e.getSources(), e.getTimestamp()))
+                    .toList();
+            c.setMessages(messages);
+            
+            // Also populate documentIds for completeness if needed by frontend
+             List<String> docIds = documentService.getDocuments(c.getId()).stream()
+                    .map(com.ragchat.model.DocumentInfo::getId)
+                    .toList();
+            c.setDocumentIds(docIds);
+        });
+        return convs;
     }
 
     public Conversation getConversation(String id) {
-        return conversations.get(id);
+        return conversationRepository.findById(id).map(c -> {
+            // Populate Messages
+            List<com.ragchat.model.MessageEntity> msgEntities = messageRepository.findByConversationIdOrderByTimestampAsc(id);
+            List<Conversation.Message> messages = msgEntities.stream()
+                    .map(e -> new Conversation.Message(e.getRole(), e.getContent(), e.getSources(), e.getTimestamp()))
+                    .toList();
+            c.setMessages(messages);
+
+            // Populate Document IDs
+            List<String> docIds = documentService.getDocuments(id).stream()
+                    .map(com.ragchat.model.DocumentInfo::getId)
+                    .toList();
+            c.setDocumentIds(docIds);
+
+            return c;
+        }).orElse(null);
     }
 
+    @Transactional
     public void deleteConversation(String id) {
-        conversations.remove(id);
+        // Delete documents (and their chunks)
+        documentService.getDocuments(id).forEach(doc -> documentService.deleteDocument(doc.getId()));
+        
+        // Delete messages
+        messageRepository.deleteByConversationId(id);
+        
+        // Delete conversation
+        conversationRepository.deleteById(id);
     }
 
-    private String generateAnswer(String question, String context, List<Conversation.Message> history) {
+    private String generateSmartSnippet(String content, String query) {
+        if (content == null || content.isEmpty()) return "";
+        
+        String contentLower = content.toLowerCase();
+        // Extract keywords: words > 3 chars OR digits
+        List<String> keywords = Arrays.stream(query.toLowerCase().split("\\s+"))
+                .filter(w -> w.length() > 3 || w.matches(".*\\d.*"))
+                .distinct()
+                .toList();
+
+        if (keywords.isEmpty()) {
+            return content.length() > 150 ? content.substring(0, 150) + "..." : content;
+        }
+
+        // 1. Find all match positions for every keyword
+        List<Integer> matchIndices = new ArrayList<>();
+        for (String keyword : keywords) {
+            java.util.regex.Pattern p;
+            if (keyword.matches(".*\\d.*")) {
+                 // Strict number matching
+                 p = java.util.regex.Pattern.compile("(?<!\\d)" + java.util.regex.Pattern.quote(keyword) + "(?!\\d)");
+            } else {
+                 // Word matching
+                 p = java.util.regex.Pattern.compile(java.util.regex.Pattern.quote(keyword));
+            }
+            java.util.regex.Matcher m = p.matcher(contentLower);
+            while (m.find()) {
+                matchIndices.add(m.start());
+            }
+        }
+        
+        Collections.sort(matchIndices);
+
+        if (matchIndices.isEmpty()) {
+             return content.length() > 150 ? content.substring(0, 150) + "..." : content;
+        }
+
+        // 2. Sliding window to find highest density of keywords
+        int windowSize = 200;
+        int bestStart = matchIndices.get(0);
+        int maxDensity = 0;
+
+        // Check windows starting at each match
+        for (int i = 0; i < matchIndices.size(); i++) {
+            int currentStart = matchIndices.get(i);
+            int currentEnd = currentStart + windowSize;
+            int density = 0;
+
+            // Count matches in this window
+            for (int j = i; j < matchIndices.size(); j++) {
+                int pos = matchIndices.get(j);
+                if (pos >= currentStart && pos < currentEnd) {
+                    density++;
+                } else if (pos >= currentEnd) {
+                    break;
+                }
+            }
+            
+            if (density > maxDensity) {
+                maxDensity = density;
+                bestStart = currentStart;
+            }
+        }
+
+        // 3. Extract best window
+        int start = Math.max(0, bestStart - 40); // Add some context before
+        int end = Math.min(content.length(), start + windowSize);
+        
+        // Adjust start if we hit end boundary
+        if (end == content.length()) {
+            start = Math.max(0, end - windowSize);
+        }
+
+        String snippet = content.substring(start, end);
+
+        // Trim edges cleanly
+        if (start > 0) snippet = "..." + snippet.substring(snippet.indexOf(' ') + 1);
+        if (end < content.length()) snippet = snippet.substring(0, snippet.lastIndexOf(' ')) + "...";
+
+        return snippet;
+    }
+
+    private String generateAnswerWithRetry(String question, String context, List<Conversation.Message> history) {
+        // Try up to 2 times — on 429/rate-limit, reduce context and retry
+        for (int attempt = 0; attempt < 2; attempt++) {
+            String ctx = attempt == 0 ? context : context.substring(0, Math.min(context.length(), 1500));
+            String result = generateAnswer(question, ctx, history, attempt > 0);
+            if (result != null) return result;
+            try {
+                Thread.sleep(2000); // Wait 2 seconds before retry
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+        return "Sorry, the AI service is temporarily overloaded. Please try again in a few seconds.";
+    }
+
+    private String generateAnswer(String question, String context, List<Conversation.Message> history, boolean reducedMode) {
         try {
             String url = config.getApiBaseUrl() + "/chat/completions";
 
@@ -145,11 +313,17 @@ public class ChatService {
             List<Map<String, String>> messages = new ArrayList<>();
             messages.add(Map.of("role", "system", "content", systemPrompt));
 
-            // Add recent conversation history (last 10 messages)
-            int startIdx = Math.max(0, history.size() - 10);
+            // Add recent conversation history (limited, with truncation)
+            int maxHistory = reducedMode ? 2 : 6;
+            int startIdx = Math.max(0, history.size() - maxHistory);
             for (int i = startIdx; i < history.size() - 1; i++) {
                 Conversation.Message msg = history.get(i);
-                messages.add(Map.of("role", msg.getRole(), "content", msg.getContent()));
+                // Truncate very long messages in history to save tokens
+                String content = msg.getContent();
+                if (content != null && content.length() > 300) {
+                    content = content.substring(0, 300) + "...";
+                }
+                messages.add(Map.of("role", msg.getRole(), "content", content != null ? content : ""));
             }
 
             messages.add(Map.of("role", "user", "content", userPrompt));
@@ -159,7 +333,7 @@ public class ChatService {
             requestBody.put("model", config.getChatModel());
             requestBody.put("messages", messages);
             requestBody.put("temperature", 0.7);
-            requestBody.put("max_tokens", 2048);
+            requestBody.put("max_tokens", reducedMode ? 800 : 1500);
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -172,9 +346,20 @@ public class ChatService {
             return root.path("choices").get(0)
                     .path("message").path("content").asText();
 
+        } catch (org.springframework.web.client.HttpClientErrorException e) {
+            int status = e.getStatusCode().value();
+            log.error("Groq API error - Status: {} Body: {}", status, e.getResponseBodyAsString());
+            if (status == 429 || status == 503) {
+                // Rate limit or overloaded — return null to trigger retry
+                return null;
+            }
+            if (status == 413 || e.getResponseBodyAsString().contains("too large")) {
+                return null; // Too large — retry with reduced context
+            }
+            return "Sorry, I encountered an error (" + status + "). Please try again.";
         } catch (Exception e) {
             log.error("Failed to generate answer: {}", e.getMessage(), e);
-            return "Sorry, I encountered an error while generating a response. Please try again.";
+            return null;
         }
     }
 }

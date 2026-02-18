@@ -1,6 +1,7 @@
 package com.ragchat.service;
 
 import com.ragchat.model.DocumentChunk;
+import com.ragchat.repository.DocumentChunkRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,18 +16,22 @@ public class VectorStoreService {
 
     private static final Logger log = LoggerFactory.getLogger(VectorStoreService.class);
 
-    private final Map<String, List<DocumentChunk>> store = new ConcurrentHashMap<>();
+    private final DocumentChunkRepository chunkRepository;
 
     @Value("${rag.top-k:5}")
     private int topK;
 
+    public VectorStoreService(DocumentChunkRepository chunkRepository) {
+        this.chunkRepository = chunkRepository;
+    }
+
     public void addChunk(String conversationId, DocumentChunk chunk) {
-        store.computeIfAbsent(conversationId, k -> Collections.synchronizedList(new ArrayList<>()))
-                .add(chunk);
+        chunk.setConversationId(conversationId);
+        chunkRepository.save(chunk);
     }
 
     public List<DocumentChunk> search(String conversationId, double[] queryEmbedding) {
-        List<DocumentChunk> chunks = store.getOrDefault(conversationId, Collections.emptyList());
+        List<DocumentChunk> chunks = chunkRepository.findByConversationId(conversationId);
         if (chunks.isEmpty()) return Collections.emptyList();
 
         return chunks.stream()
@@ -38,7 +43,7 @@ public class VectorStoreService {
     }
 
     public Map<String, Double> searchWithScores(String conversationId, double[] queryEmbedding) {
-        List<DocumentChunk> chunks = store.getOrDefault(conversationId, Collections.emptyList());
+        List<DocumentChunk> chunks = chunkRepository.findByConversationId(conversationId);
         if (chunks.isEmpty()) return Collections.emptyMap();
 
         return chunks.stream()
@@ -49,14 +54,11 @@ public class VectorStoreService {
     }
 
     public void removeDocument(String conversationId, String documentId) {
-        List<DocumentChunk> chunks = store.get(conversationId);
-        if (chunks != null) {
-            chunks.removeIf(c -> c.getDocumentId().equals(documentId));
-        }
+        chunkRepository.deleteByDocumentId(documentId);
     }
 
     public int getChunkCount(String conversationId) {
-        return store.getOrDefault(conversationId, Collections.emptyList()).size();
+        return chunkRepository.findByConversationId(conversationId).size();
     }
 
     private double cosineSimilarity(double[] a, double[] b) {

@@ -2,6 +2,20 @@ server:
   port: 8081
 
 spring:
+  application:
+    name: rag-chatbot
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ragchatbot
+    username: postgres
+    password: ${DB_PASSWORD:1234}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
   servlet:
     multipart:
       max-file-size: 50MB
