@@ -1,0 +1,18 @@
+server:
+  port: 8081
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+
+groq:
+  api-key: ${GROQ_API_KEY}
+  chat-model: llama-3.3-70b-versatile
+  api-base-url: https://api.groq.com/openai/v1
+
+rag:
+  chunk-size: 500
+  chunk-overlap: 50
+  top-k: 5
