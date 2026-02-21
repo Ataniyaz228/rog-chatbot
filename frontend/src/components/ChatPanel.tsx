@@ -128,15 +128,15 @@ export default function ChatPanel({
                                 {/* Asymmetrical Bento Box */}
                                 <div className="w-full max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-3 mb-3">
                                     {/* Main Large Card */}
-                                    <SpotlightCard className="md:col-span-8 p-5 rounded-[24px] flex flex-col justify-between text-left group cursor-pointer bg-white/[0.03] backdrop-blur-xl border border-white/10 hover:border-orange-500/30 transition-all duration-500" spotlightColor="rgba(249, 115, 22, 0.08)" onClick={() => {
+                                    <SpotlightCard className="md:col-span-8 p-5 rounded-[24px] flex flex-col justify-between text-left group cursor-pointer bg-white/[0.03] backdrop-blur-xl border border-white/10 hover:border-white/20 transition-all duration-500" spotlightColor="rgba(255, 255, 255, 0.05)" onClick={() => {
                                         setInput("Analyze my uploaded documents");
                                         inputRef.current?.focus();
                                     }}>
                                         <div>
-                                            <div className="w-10 h-10 rounded-xl mb-3 flex items-center justify-center bg-orange-500/10 border border-orange-500/20 group-hover:bg-orange-500/20 transition-colors">
-                                                <Network size={20} className="text-orange-500" />
+                                            <div className="w-10 h-10 rounded-xl mb-3 flex items-center justify-center bg-orange-500/5 border border-orange-500/10 group-hover:bg-orange-500/20 transition-colors">
+                                                <Network size={20} className="text-orange-500/80 group-hover:text-orange-400 transition-colors" />
                                             </div>
-                                            <h3 className="text-lg font-semibold mb-2 text-white group-hover:text-orange-400 transition-colors">Deep Document Analysis</h3>
+                                            <h3 className="text-lg font-semibold mb-2 text-white group-hover:text-zinc-100 transition-colors">Deep Document Analysis</h3>
                                             <p className="text-sm leading-relaxed text-zinc-400 group-hover:text-zinc-300">
                                                 Upload complex PDFs, CSVs, or text. The RAG engine creates a semantic vector space for hyper-specific cross-file queries.
                                             </p>
@@ -145,7 +145,7 @@ export default function ChatPanel({
 
                                     {/* Side Stacked Cards */}
                                     <div className="md:col-span-4 flex flex-col gap-3">
-                                        <SpotlightCard className="flex-1 p-5 rounded-[24px] flex flex-col justify-center items-start group cursor-pointer bg-white/[0.03] backdrop-blur-xl border border-white/10 hover:border-orange-500/30 transition-all duration-500" spotlightColor="rgba(249, 115, 22, 0.06)" onClick={() => {
+                                        <SpotlightCard className="flex-1 p-5 rounded-[24px] flex flex-col justify-center items-start group cursor-pointer bg-white/[0.03] backdrop-blur-xl border border-white/10 hover:border-white/20 transition-all duration-500" spotlightColor="rgba(255, 255, 255, 0.05)" onClick={() => {
                                             setInput("Explain the core concepts briefly");
                                             inputRef.current?.focus();
                                         }}>
@@ -153,7 +153,7 @@ export default function ChatPanel({
                                             <h4 className="text-sm font-semibold text-zinc-100 group-hover:text-white">Quick Synthesize</h4>
                                         </SpotlightCard>
 
-                                        <SpotlightCard className="flex-1 p-5 rounded-[24px] flex flex-col justify-center items-start group cursor-pointer bg-white/[0.03] backdrop-blur-xl border border-white/10 hover:border-orange-500/30 transition-all duration-500" spotlightColor="rgba(249, 115, 22, 0.06)" onClick={() => {
+                                        <SpotlightCard className="flex-1 p-5 rounded-[24px] flex flex-col justify-center items-start group cursor-pointer bg-white/[0.03] backdrop-blur-xl border border-white/10 hover:border-white/20 transition-all duration-500" spotlightColor="rgba(255, 255, 255, 0.05)" onClick={() => {
                                             setInput("Find the most important metrics");
                                             inputRef.current?.focus();
                                         }}>
@@ -225,9 +225,9 @@ export default function ChatPanel({
                                     key={doc.id}
                                     className="px-2.5 py-1 rounded-lg text-xs"
                                     style={{
-                                        background: 'var(--accent-muted)',
-                                        border: '1px solid var(--border-active)',
-                                        color: 'var(--accent-hover)',
+                                        background: 'rgba(255, 255, 255, 0.03)',
+                                        border: '1px solid rgba(255, 255, 255, 0.1)',
+                                        color: 'var(--text-secondary)',
                                     }}
                                 >
                                     <FileText size={11} />

@@ -40,7 +40,7 @@ export default function RootLayout({
 
         {/* Ambient Glow Spots */}
         <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-600/10 rounded-full blur-[120px] animate-glow-slow" />
+          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-slate-900/10 rounded-full blur-[120px] animate-glow-slow" />
           <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-orange-600/5 rounded-full blur-[150px] animate-glow-slower" />
         </div>
 
@@ -63,7 +63,8 @@ export default function RootLayout({
                   minWidth: 200.00,
                   scale: 1.00,
                   scaleMobile: 1.00,
-                  color: 0x1a0b2e,
+                  color: 0x080808,
+                  backgroundColor: 0x000000,
                   shininess: 50.00,
                   waveHeight: 20.00,
                   waveSpeed: 0.60

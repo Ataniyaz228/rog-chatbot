@@ -212,12 +212,7 @@ function MessageBubble({
                                     )}
                                 </span>
                                 <span
-                                    className="px-1.5 py-0.5 rounded text-xs"
-                                    style={{
-                                        background: 'var(--accent-muted)',
-                                        color: 'var(--accent)',
-                                        fontSize: '10px',
-                                    }}
+                                    className="px-1.5 py-0.5 rounded text-[10px] bg-white/5 text-zinc-400 border border-white/5"
                                 >
                                     {Math.round(source.relevanceScore * 100)}%
                                 </span>
