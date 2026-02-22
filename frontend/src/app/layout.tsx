@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   title: "RAG Chatbot — AI Document Assistant",
   description:
     "Upload documents and ask questions about their content using AI-powered RAG technology. Supports PDF, DOCX, TXT, CSV, and more.",
-  keywords: ["RAG", "chatbot", "AI", "document", "search", "Groq", "Llama"],
+  keywords: ["RAG", "chatbot", "AI", "document", "search", "Claude", "Opus"],
   openGraph: {
     title: "RAG Chatbot — AI Document Assistant",
     description: "AI-powered document analysis and question answering",

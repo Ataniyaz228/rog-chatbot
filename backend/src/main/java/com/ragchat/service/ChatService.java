@@ -2,7 +2,7 @@ package com.ragchat.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ragchat.config.GeminiConfig;
+import com.ragchat.config.AiConfig;
 import com.ragchat.model.ChatRequest;
 import com.ragchat.model.ChatResponse;
 import com.ragchat.model.Conversation;
@@ -24,7 +24,7 @@ public class ChatService {
 
     private static final Logger log = LoggerFactory.getLogger(ChatService.class);
 
-    private final GeminiConfig config;
+    private final AiConfig config;
     private final RestTemplate restTemplate;
     private final EmbeddingService embeddingService;
     private final VectorStoreService vectorStoreService;
@@ -33,7 +33,7 @@ public class ChatService {
     private final MessageRepository messageRepository;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public ChatService(GeminiConfig config, RestTemplate restTemplate,
+    public ChatService(AiConfig config, RestTemplate restTemplate,
                        EmbeddingService embeddingService, VectorStoreService vectorStoreService,
                        DocumentService documentService,
                        ConversationRepository conversationRepository, MessageRepository messageRepository) {
@@ -84,15 +84,15 @@ public class ChatService {
 
         final Map<String, Double> finalScores = scores;
 
-        // Limit context to ~3000 chars to stay within Groq token limits
+        // Limit context to ~40000 chars to leverage Claude Opus's large context window
         StringBuilder contextBuilder = new StringBuilder();
         for (DocumentChunk chunk : relevantChunks) {
             String entry = String.format("[Document: %s]\n%s", chunk.getDocumentName(), chunk.getContent());
             
-            if (contextBuilder.length() + entry.length() > 3000) {
+            if (contextBuilder.length() + entry.length() > 40000) {
                 // If context is still empty (first chunk is too big), truncate and add it
                 if (contextBuilder.isEmpty()) {
-                    contextBuilder.append(entry.substring(0, Math.min(entry.length(), 3000)));
+                    contextBuilder.append(entry.substring(0, Math.min(entry.length(), 40000)));
                 }
                 break; // Stop adding more chunks
             }
@@ -279,7 +279,7 @@ public class ChatService {
     private String generateAnswerWithRetry(String question, String context, List<Conversation.Message> history) {
         // Try up to 2 times — on 429/rate-limit, reduce context and retry
         for (int attempt = 0; attempt < 2; attempt++) {
-            String ctx = attempt == 0 ? context : context.substring(0, Math.min(context.length(), 1500));
+            String ctx = attempt == 0 ? context : context.substring(0, Math.min(context.length(), 10000));
             String result = generateAnswer(question, ctx, history, attempt > 0);
             if (result != null) return result;
             try {
@@ -296,12 +296,19 @@ public class ChatService {
             String url = config.getApiBaseUrl() + "/chat/completions";
 
             String systemPrompt = """
-                    You are a helpful AI assistant that answers questions based on the provided documents.
-                    Always base your answers on the document context provided.
-                    If the context doesn't contain relevant information, say so honestly.
-                    Be specific and cite which document the information comes from.
-                    Respond in the same language as the user's question.
-                    Format your response using Markdown when helpful.
+                    You are "Neural Core", a sophisticated AI assistant designed for deep document analysis and reasoning.
+                    You have access to a vast context of provided documents.
+                    
+                    CRITICAL RULES:
+                    1. NO EMOJIS: Never use emojis. Instead, use clean typography, bold headers, and structured lists for emphasis.
+                    2. BASE YOUR ANSWERS ONLY ON THE PROVIDED DOCUMENT CONTEXT.
+                    3. If the context doesn't contain the answer, state that clearly but try to offer relevant insights from the documents if possible.
+                    4. USE YOUR ADVANCED REASONING: Analyze complex relationships across multiple document chunks.
+                    5. CITATIONS: Always cite the document name and section when providing information.
+                    6. LANGUAGE: Respond in the same language as the user.
+                    7. FORMATTING: Use clean Markdown (headers, tables, bold text) for technical or structured data.
+                    8. EXPLAIN YOUR LOGIC: If a query is complex, briefly explain how you arrived at the answer based on the documents.
+                    9. AESTHETICS: Ensure the output looks professional, high-end, and structured. Use horizontal lines (---) to separate sections if helpful.
                     """;
 
             String userPrompt = context.isBlank()
@@ -313,8 +320,8 @@ public class ChatService {
             List<Map<String, String>> messages = new ArrayList<>();
             messages.add(Map.of("role", "system", "content", systemPrompt));
 
-            // Add recent conversation history (limited, with truncation)
-            int maxHistory = reducedMode ? 2 : 6;
+            // Add recent conversation history (Claude Opus can handle much more)
+            int maxHistory = reducedMode ? 5 : 20;
             int startIdx = Math.max(0, history.size() - maxHistory);
             for (int i = startIdx; i < history.size() - 1; i++) {
                 Conversation.Message msg = history.get(i);
@@ -332,8 +339,8 @@ public class ChatService {
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("model", config.getChatModel());
             requestBody.put("messages", messages);
-            requestBody.put("temperature", 0.7);
-            requestBody.put("max_tokens", reducedMode ? 800 : 1500);
+            requestBody.put("temperature", 0.5); // Lower temperature for more consistent reasoning
+            requestBody.put("max_tokens", reducedMode ? 2000 : 4096);
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -348,7 +355,7 @@ public class ChatService {
 
         } catch (org.springframework.web.client.HttpClientErrorException e) {
             int status = e.getStatusCode().value();
-            log.error("Groq API error - Status: {} Body: {}", status, e.getResponseBodyAsString());
+            log.error("AI API error - Status: {} Body: {}", status, e.getResponseBodyAsString());
             if (status == 429 || status == 503) {
                 // Rate limit or overloaded — return null to trigger retry
                 return null;

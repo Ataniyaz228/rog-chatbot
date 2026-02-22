@@ -6,8 +6,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
-@ConfigurationProperties(prefix = "groq")
-public class GeminiConfig {
+@ConfigurationProperties(prefix = "ai")
+public class AiConfig {
     private String apiKey;
     private String chatModel;
     private String apiBaseUrl;

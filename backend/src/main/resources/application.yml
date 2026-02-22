@@ -21,12 +21,12 @@ spring:
       max-file-size: 50MB
       max-request-size: 50MB
 
-groq:
-  api-key: ${GROQ_API_KEY}
-  chat-model: llama-3.3-70b-versatile
-  api-base-url: https://api.groq.com/openai/v1
+ai:
+  api-key: ${AI_API_KEY}
+  chat-model: ${AI_MODEL}
+  api-base-url: ${AI_BASE_URL}
 
 rag:
   chunk-size: 500
   chunk-overlap: 50
-  top-k: 5
+  top-k: 20

@@ -3,6 +3,7 @@
 import { memo, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { coldarkDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { IconCopy as Copy, IconCheck as Check, IconUser as User, IconFile as FileText } from './icons';
@@ -105,12 +106,16 @@ function MessageBubble({
                         >
                             {/* Assistant Header */}
                             {!isUser && (
-                                <div className="text-[11px] font-medium mb-3 tracking-wide text-zinc-500 uppercase">
-                                    Neural Core
+                                <div className="flex items-center gap-2 mb-3">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.6)] animate-pulse" />
+                                    <div className="text-[10px] font-bold tracking-[0.2em] text-zinc-500 uppercase">
+                                        Neural Core
+                                    </div>
                                 </div>
                             )}
 
                             <ReactMarkdown
+                                remarkPlugins={[remarkGfm]}
                                 components={{
                                     code({ className, children, ...props }) {
                                         const match = /language-(\w+)/.exec(className || '');

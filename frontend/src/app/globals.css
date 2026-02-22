@@ -516,8 +516,9 @@ body {
 }
 
 .markdown-content p {
-  margin-bottom: 0.75em;
-  line-height: 1.75;
+  margin-bottom: 1em;
+  line-height: 1.8;
+  color: var(--text-secondary);
 }
 
 .markdown-content code {
@@ -561,11 +562,14 @@ body {
 }
 
 .markdown-content blockquote {
-  border-left: 3px solid var(--accent);
-  padding-left: 1em;
+  border-left: 2px solid var(--accent);
+  padding: 0.75em 1.25em;
+  background: var(--accent-muted);
+  border-radius: 0 12px 12px 0;
   color: var(--text-secondary);
-  margin: 0.75em 0;
-  font-style: italic;
+  margin: 1.5em 0;
+  font-style: normal;
+  font-size: 0.95em;
 }
 
 .markdown-content a {
@@ -581,21 +585,48 @@ body {
 
 .markdown-content table {
   width: 100%;
-  border-collapse: collapse;
-  margin: 0.75em 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 1.5em 0;
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  overflow: hidden;
 }
 
 .markdown-content th,
 .markdown-content td {
-  border: 1px solid var(--border-subtle);
-  padding: 0.5em 0.75em;
+  border-bottom: 1px solid var(--border-subtle);
+  border-right: 1px solid var(--border-subtle);
+  padding: 0.85em 1.25em;
   text-align: left;
   font-size: 0.9em;
 }
 
+.markdown-content th:last-child,
+.markdown-content td:last-child {
+  border-right: none;
+}
+
+.markdown-content tr:last-child td {
+  border-bottom: none;
+}
+
 .markdown-content th {
   background: var(--bg-tertiary);
+  color: var(--text-primary);
   font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75em;
+  letter-spacing: 0.05em;
+}
+
+.markdown-content td {
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.01);
+}
+
+.markdown-content tr:hover td {
+  background: rgba(255, 255, 255, 0.03);
 }
 
 /* ====== PROGRESS ====== */
