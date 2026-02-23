@@ -45,13 +45,13 @@ Neural Core enables deep reasoning and analysis across your private document col
       <td align="center"><em>Application Workflow</em></td>
     </tr>
     <tr>
-      <td><img src="https://via.placeholder.com/800x450/1a1a1a/ffffff?text=Chat+Interface+Screenshot" alt="Chat Interface" width="100%"></td>
+      <td><img src="c:\Users\Ataniyaz\AppData\Local\Packages\MicrosoftWindows.Client.Core_cw5n1h2txyewy\TempState\ScreenClip\{DDF14642-0934-45E8-89D6-E6F5A7DCB2BB}.png" alt="Chat Interface" width="100%"></td>
     </tr>
     <tr>
       <td align="center"><em>Advanced Chat Interface with Neural Intelligence</em></td>
     </tr>
     <tr>
-      <td><img src="https://via.placeholder.com/800x450/1a1a1a/ffffff?text=Document+Analysis+Screenshot" alt="Document Analysis" width="100%"></td>
+      <td><img src="c:\Users\Ataniyaz\AppData\Local\Packages\MicrosoftWindows.Client.Core_cw5n1h2txyewy\TempState\ScreenClip\{C0E22994-089A-40AB-93BD-C3A8CA2F7B39}.png" alt="Document Analysis" width="100%"></td>
     </tr>
     <tr>
       <td align="center"><em>Semantic Document Search and Retrieval</em></td>
@@ -61,7 +61,7 @@ Neural Core enables deep reasoning and analysis across your private document col
 
 ### Technology Stack
 
-**Backend**
+**Backend** 
 <div>
   <img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=spring&logoColor=white" alt="Spring Boot" />
   <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
