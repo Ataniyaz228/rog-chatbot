@@ -10,6 +10,7 @@ import {
     IconChevronRight as ChevronRight,
 } from './icons';
 import type { Conversation, DocumentInfo } from '@/lib/api';
+import { useAuth } from '@/context/AuthContext';
 import SpotlightCard from './SpotlightCard';
 import ScrambleText from './ScrambleText';
 import FrostedOrb from './FrostedOrb';
@@ -97,7 +98,8 @@ export default function ProfilePanel({
     documents,
     onClearData
 }: ProfilePanelProps) {
-    const [name, setName] = useState('User');
+    const { user, logout } = useAuth();
+    const [name, setName] = useState(user?.username || 'User');
     const [role, setRole] = useState('AI Explorer');
     const [isEditing, setIsEditing] = useState(false);
 
@@ -108,21 +110,20 @@ export default function ProfilePanel({
     // Calculate total messages
     const totalMessages = conversations.reduce((acc, c) => acc + (c.messages?.length || 0), 0);
 
-    // Load from local storage
+    // Sync name from auth context when it loads
     useEffect(() => {
-        const loadState = async () => {
-            await Promise.resolve();
-            const savedName = localStorage.getItem('rag_username');
-            const savedRole = localStorage.getItem('rag_userrole');
-            const savedNotifs = localStorage.getItem('rag_notifs');
-            const savedSharing = localStorage.getItem('rag_sharing');
+        if (user?.username) setName(user.username);
+    }, [user?.username]);
 
-            if (savedName) setName(savedName);
-            if (savedRole) setRole(savedRole);
-            if (savedNotifs) setNotifications(savedNotifs === 'true');
-            if (savedSharing) setDataSharing(savedSharing === 'true');
-        };
-        loadState();
+    // Load preferences from local storage (not name — that comes from auth)
+    useEffect(() => {
+        const savedRole = localStorage.getItem('rag_userrole');
+        const savedNotifs = localStorage.getItem('rag_notifs');
+        const savedSharing = localStorage.getItem('rag_sharing');
+
+        if (savedRole) setRole(savedRole);
+        if (savedNotifs) setNotifications(savedNotifs === 'true');
+        if (savedSharing) setDataSharing(savedSharing === 'true');
     }, []);
 
     const handleSaveProfile = () => {
@@ -406,7 +407,10 @@ export default function ProfilePanel({
                         </div>
                     </div>
 
-                    <button className="w-full mt-4 p-4 rounded-xl text-sm font-medium text-zinc-600 hover:text-zinc-300 hover:bg-white/[0.02] transition-all flex items-center justify-center gap-2 cursor-pointer group">
+                    <button
+                        onClick={logout}
+                        className="w-full mt-4 p-4 rounded-xl text-sm font-medium text-zinc-600 hover:text-zinc-300 hover:bg-white/[0.02] transition-all flex items-center justify-center gap-2 cursor-pointer group"
+                    >
                         <LogOut size={16} className="group-hover:translate-x-[-2px] transition-transform" /> Sign Out
                     </button>
                 </motion.div>

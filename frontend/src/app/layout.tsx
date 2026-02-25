@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Outfit } from "next/font/google";
 import Script from "next/script";
+import { AuthProvider } from "@/context/AuthContext";
 import CursorHalo from "@/components/CursorHalo";
 import "./globals.css";
 
@@ -78,7 +79,9 @@ export default function RootLayout({
         {/* <CursorHalo /> */}
         {/* <div className="noise-overlay pointer-events-none" /> */}
         <div className="relative z-10 w-full h-full">
-          {children}
+          <AuthProvider>
+            {children}
+          </AuthProvider>
         </div>
       </body>
     </html>

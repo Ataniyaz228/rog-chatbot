@@ -3,8 +3,12 @@ package com.ragchat.controller;
 import com.ragchat.model.ChatRequest;
 import com.ragchat.model.ChatResponse;
 import com.ragchat.model.Conversation;
+import com.ragchat.model.User;
+import com.ragchat.repository.UserRepository;
 import com.ragchat.service.ChatService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,15 +18,26 @@ import java.util.List;
 public class ChatController {
 
     private final ChatService chatService;
+    private final UserRepository userRepository;
 
-    public ChatController(ChatService chatService) {
+    public ChatController(ChatService chatService, UserRepository userRepository) {
         this.chatService = chatService;
+        this.userRepository = userRepository;
+    }
+
+    private String getCurrentUserId() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return user.getId();
     }
 
     @PostMapping("/chat")
     public ResponseEntity<?> chat(@RequestBody ChatRequest request) {
         try {
-            return ResponseEntity.ok(chatService.chat(request));
+            String userId = getCurrentUserId();
+            return ResponseEntity.ok(chatService.chat(request, userId));
         } catch (Exception e) {
             e.printStackTrace();
             java.util.Map<String, String> error = new java.util.HashMap<>();
@@ -34,7 +49,8 @@ public class ChatController {
 
     @GetMapping("/conversations")
     public ResponseEntity<List<Conversation>> getConversations() {
-        return ResponseEntity.ok(chatService.getConversations());
+        String userId = getCurrentUserId();
+        return ResponseEntity.ok(chatService.getConversations(userId));
     }
 
     @GetMapping("/conversations/{id}")

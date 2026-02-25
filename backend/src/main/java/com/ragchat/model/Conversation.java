@@ -14,6 +14,8 @@ public class Conversation {
 
     private String title;
 
+    private String userId;
+
     @Transient // Not stored in DB directly here, handled by Repository
     private List<Message> messages = new ArrayList<>();
 
@@ -29,6 +31,8 @@ public class Conversation {
     public void setId(String id) { this.id = id; }
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
+    public String getUserId() { return userId; }
+    public void setUserId(String userId) { this.userId = userId; }
     public List<Message> getMessages() { return messages; }
     public void setMessages(List<Message> messages) { this.messages = messages; }
     public List<String> getDocumentIds() { return documentIds; }

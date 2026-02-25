@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useCallback, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 import Sidebar from '@/components/Sidebar';
 import ChatPanel from '@/components/ChatPanel';
 import ProfilePanel from '@/components/ProfilePanel';
@@ -14,6 +16,8 @@ import {
 import type { Message, Conversation, DocumentInfo } from '@/lib/api';
 
 export default function Home() {
+  const { isAuthenticated, isLoading: authLoading, user, logout } = useAuth();
+  const router = useRouter();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -34,10 +38,19 @@ export default function Home() {
   // Current conversation ID (active or pending)
   const currentConversationId = activeId || getPendingId();
 
-  // Load conversations on mount
+  // Auth guard: redirect to login if not authenticated
   useEffect(() => {
-    loadConversations();
-  }, []);
+    if (!authLoading && !isAuthenticated) {
+      router.push('/login');
+    }
+  }, [authLoading, isAuthenticated, router]);
+
+  // Load conversations on mount (only if authenticated)
+  useEffect(() => {
+    if (isAuthenticated) {
+      loadConversations();
+    }
+  }, [isAuthenticated]);
 
   const loadConversations = async () => {
     try {
@@ -152,6 +165,25 @@ export default function Home() {
       console.error('Failed to delete document:', err);
     }
   }, []);
+
+  // Auth guard — must be AFTER all hooks. Redirect instead of early-return
+  // to avoid unmounting child components mid-render (which breaks hooks).
+  if (authLoading) {
+    return (
+      <div className="flex h-screen w-screen items-center justify-center">
+        <div className="text-zinc-500 text-sm">Loading...</div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    router.push('/login');
+    return (
+      <div className="flex h-screen w-screen items-center justify-center">
+        <div className="text-zinc-500 text-sm">Redirecting...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen w-screen bg-transparent p-4 gap-4 overflow-hidden relative z-10 box-border">

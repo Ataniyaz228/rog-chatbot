@@ -46,7 +46,7 @@ public class ChatService {
         this.messageRepository = messageRepository;
     }
 
-    public ChatResponse chat(ChatRequest request) {
+    public ChatResponse chat(ChatRequest request, String userId) {
         String conversationId = request.getConversationId();
         if (conversationId == null || conversationId.isBlank()) {
             conversationId = UUID.randomUUID().toString();
@@ -57,6 +57,7 @@ public class ChatService {
                 .orElseGet(() -> {
                     Conversation c = new Conversation();
                     c.setId(finalConversationId);
+                    c.setUserId(userId);
                     c.setTitle(request.getMessage().length() > 50
                             ? request.getMessage().substring(0, 50) + "..."
                             : request.getMessage());
@@ -144,8 +145,8 @@ public class ChatService {
         return response;
     }
 
-    public List<Conversation> getConversations() {
-        List<Conversation> convs = conversationRepository.findAllByOrderByUpdatedAtDesc();
+    public List<Conversation> getConversations(String userId) {
+        List<Conversation> convs = conversationRepository.findAllByUserIdOrderByUpdatedAtDesc(userId);
         // Populate messages for each conversation so the frontend shows correct counts/previews
         convs.forEach(c -> {
             List<com.ragchat.model.MessageEntity> msgEntities = messageRepository.findByConversationIdOrderByTimestampAsc(c.getId());

@@ -11,5 +11,8 @@ public interface ConversationRepository extends JpaRepository<Conversation, Stri
     
     // Find all conversations, sorted by last update time (descending)
     List<Conversation> findAllByOrderByUpdatedAtDesc();
+
+    // Find conversations for a specific user
+    List<Conversation> findAllByUserIdOrderByUpdatedAtDesc(String userId);
     
 }

@@ -30,3 +30,6 @@ rag:
   chunk-size: 500
   chunk-overlap: 50
   top-k: 20
+
+jwt:
+  secret: ${JWT_SECRET:NeuralCoreRAGChatbotSecretKeyForJWTTokenGenerationMustBe256Bits}
