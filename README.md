@@ -4,28 +4,27 @@
 
 <div align="center">
 
-  <!-- ——— Header Badge ——— -->
+  <!-- ——— Header ——— -->
   <img src="https://capsule-render.vercel.app/api?type=waving&color=0:0d0d0d,50:1a1a2e,100:16213e&height=220&section=header&text=Neural%20Core&fontSize=72&fontColor=ffffff&fontAlignY=35&desc=Advanced%20RAG%20Chatbot&descSize=18&descAlignY=55&animation=fadeIn" width="100%" alt="Neural Core Header" />
 
-  <!-- ——— Subtitle ——— -->
   <br />
-  <p>
-    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=22&duration=3000&pause=1000&color=D97757&center=true&vCenter=true&multiline=true&repeat=true&width=700&height=30&lines=State-of-the-art+Retrieval-Augmented+Generation+System" alt="Typing SVG" />
-  </p>
 
-  <!-- ——— Quick Badges ——— -->
-  <p>
-    <img src="https://img.shields.io/badge/status-active-success?style=flat-square" alt="Status" />
-    <img src="https://img.shields.io/badge/version-2.0-blue?style=flat-square" alt="Version" />
-    <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="License" />
-    <img src="https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square" alt="PRs Welcome" />
-  </p>
+  <samp>State-of-the-art Retrieval-Augmented Generation System powered by Claude Opus 4.6</samp>
+
+  <br /><br />
+
+  <!-- ——— Status Badges ——— -->
+  <img src="https://img.shields.io/badge/status-active-success?style=flat-square" alt="Status" />
+  <img src="https://img.shields.io/badge/version-2.0-blue?style=flat-square" alt="Version" />
+  <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="License" />
+  <img src="https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square" alt="PRs Welcome" />
+
+  <br /><br />
 
   <!-- ——— Language Navigation ——— -->
-  <p>
-    <a href="#-overview"><img src="https://img.shields.io/badge/lang-English-white?style=flat-square&logo=googletranslate&logoColor=white" alt="English" /></a>
-    <a href="#-обзор-проекта"><img src="https://img.shields.io/badge/lang-Русский-white?style=flat-square&logo=googletranslate&logoColor=white" alt="Русский" /></a>
-  </p>
+  <a href="#-overview"><kbd>English</kbd></a>
+  &nbsp;&nbsp;
+  <a href="#-обзор-проекта"><kbd>Русский</kbd></a>
 
 </div>
 
@@ -35,42 +34,42 @@
 <!--                              ENGLISH SECTION                             -->
 <!-- ═══════════════════════════════════════════════════════════════════════════ -->
 
-## <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Gear.png" width="28" /> Overview
+## <img src="https://cdn.simpleicons.org/aboutdotme/white" width="18" height="18" /> &nbsp;Overview
 
 **Neural Core** is a production-grade Retrieval-Augmented Generation system powered by **Claude Opus 4.6**. It enables deep reasoning and analysis across private document collections through a premium dark-themed interface with 3D elements and smooth micro-interactions.
 
 <br />
 
-## <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Puzzle%20Piece.png" width="28" /> Key Features
+## <img src="https://cdn.simpleicons.org/starship/D97757" width="18" height="18" /> &nbsp;Key Features
 
 <table>
   <tr>
     <td width="50%">
-      <h3><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Crystal%20Ball.png" width="20" /> Intelligence</h3>
+      <h3><img src="https://cdn.simpleicons.org/anthropic/D97757" width="16" height="16" /> &nbsp;Intelligence</h3>
       Powered by the most advanced <b>Claude Opus 4.6</b> model for superior reasoning and deep document comprehension.
     </td>
     <td width="50%">
-      <h3><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Magnifying%20Glass%20Tilted%20Left.png" width="20" /> Deep Document Analysis</h3>
+      <h3><img src="https://cdn.simpleicons.org/elasticsearch/white" width="16" height="16" /> &nbsp;Deep Document Analysis</h3>
       Analyzes complex relationships across multiple documents with high precision using semantic vector search.
     </td>
   </tr>
   <tr>
     <td width="50%">
-      <h3><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/High%20Voltage.png" width="20" /> Advanced RAG Engine</h3>
+      <h3><img src="https://cdn.simpleicons.org/apachespark/E25A1C" width="16" height="16" /> &nbsp;Advanced RAG Engine</h3>
       Efficient vector search and context management that delivers relevant and accurate responses.
     </td>
     <td width="50%">
-      <h3><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Artist%20Palette.png" width="20" /> Premium UI/UX</h3>
+      <h3><img src="https://cdn.simpleicons.org/framer/0055FF" width="16" height="16" /> &nbsp;Premium UI/UX</h3>
       Dark, futuristic interface with 3D animations, Framer Motion transitions, and glassmorphism effects.
     </td>
   </tr>
   <tr>
     <td width="50%">
-      <h3><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Bookmark%20Tabs.png" width="20" /> Smart Citations</h3>
+      <h3><img src="https://cdn.simpleicons.org/bookstack/white" width="16" height="16" /> &nbsp;Smart Citations</h3>
       Automatic source tracking and section-specific references for full answer transparency.
     </td>
     <td width="50%">
-      <h3><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Locked.png" width="20" /> Security First</h3>
+      <h3><img src="https://cdn.simpleicons.org/letsencrypt/FFB020" width="16" height="16" /> &nbsp;Security First</h3>
       Environment-based configuration for sensitive API keys and secure data handling.
     </td>
   </tr>
@@ -78,46 +77,42 @@
 
 <br />
 
-## <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Clapper%20Board.png" width="28" /> Demo
+## <img src="https://cdn.simpleicons.org/youtube/FF0000" width="18" height="18" /> &nbsp;Demo
 
 <div align="center">
 
-  <!-- ——— Video Placeholder ——— -->
   <a href="YOUR_VIDEO_URL_HERE">
     <img src="https://img.shields.io/badge/-%E2%96%B6%20Watch%20Demo%20Video-FF4500?style=for-the-badge&logo=youtube&logoColor=white" alt="Watch Demo" />
   </a>
 
   <br /><br />
 
-  > Replace the link above with your hosted video URL. You can also embed the video directly:
-
-  <!-- If hosting on GitHub, replace the src below with the raw video link -->
-  <!-- <video src="./frontend/public/scrinshots/video.mp4" controls width="800"></video> -->
+  <sup>Replace the link above with your hosted video URL, or embed the <code>video.mp4</code> from the screenshots folder.</sup>
 
 </div>
 
 <br />
 
-## <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Camera%20with%20Flash.png" width="28" /> Screenshots
+## <img src="https://cdn.simpleicons.org/sharp/white" width="18" height="18" /> &nbsp;Screenshots
 
 <div align="center">
 
   <!-- ——— Screenshot 1: Landing Page ——— -->
-  <img src="./frontend/public/scrinshots/landing-page.png" alt="Landing Page" width="90%" style="border-radius: 12px;" />
+  <img src="./frontend/public/scrinshots/landing-page.png" alt="Landing Page" width="90%" />
   <br />
   <sup><b>Landing Page</b> — 3D robot mascot, feature cards, and conversation sidebar</sup>
 
   <br /><br />
 
   <!-- ——— Screenshot 2: Chat / Document Analysis ——— -->
-  <img src="./frontend/public/scrinshots/chat-page.png" alt="Chat & Document Analysis" width="90%" style="border-radius: 12px;" />
+  <img src="./frontend/public/scrinshots/chat-page.png" alt="Chat & Document Analysis" width="90%" />
   <br />
   <sup><b>Chat Interface</b> — Semantic document analysis with structured table output and source citations</sup>
 
   <br /><br />
 
   <!-- ——— Screenshot 3: Profile Page ——— -->
-  <img src="./frontend/public/scrinshots/profile=page.png" alt="Profile Dashboard" width="90%" style="border-radius: 12px;" />
+  <img src="./frontend/public/scrinshots/profile=page.png" alt="Profile Dashboard" width="90%" />
   <br />
   <sup><b>Profile Dashboard</b> — User telemetry, conversation history, and activity tracking</sup>
 
@@ -125,18 +120,15 @@
 
 <br />
 
-## <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Hammer%20and%20Wrench.png" width="28" /> Technology Stack
+## <img src="https://cdn.simpleicons.org/stackoverflow/F58025" width="18" height="18" /> &nbsp;Technology Stack
 
 <div align="center">
 
-  <!-- ——— Skill Icons (from tandpfun/skill-icons) ——— -->
   <a href="https://skillicons.dev">
     <img src="https://skillicons.dev/icons?i=java,spring,postgres,hibernate,nextjs,react,ts,tailwind,threejs&theme=dark&perline=9" alt="Tech Stack Icons" />
   </a>
 
   <br /><br />
-
-  <!-- ——— Grouped Badges ——— -->
 
   <table>
     <tr>
@@ -177,7 +169,7 @@
 
 <br />
 
-## <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Desktop%20Computer.png" width="28" /> Architecture
+## <img src="https://cdn.simpleicons.org/diagramsdotnet/white" width="18" height="18" /> &nbsp;Architecture
 
 ```
                          +-------------------+
@@ -201,7 +193,7 @@
 
 <br />
 
-## <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Rocket.png" width="28" /> Getting Started
+## <img src="https://cdn.simpleicons.org/windowsterminal/white" width="18" height="18" /> &nbsp;Getting Started
 
 ### Prerequisites
 
@@ -247,7 +239,7 @@ npm run dev
 
 <br />
 
-## <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Open%20File%20Folder.png" width="28" /> Project Structure
+## <img src="https://cdn.simpleicons.org/files/white" width="18" height="18" /> &nbsp;Project Structure
 
 ```
 rag-chatbot/
@@ -275,7 +267,7 @@ rag-chatbot/
 <br />
 
 <!-- ═══════════════════════════════════════════════════════════════════════════ -->
-<!--                             DIVIDER                                      -->
+<!--                              DIVIDER                                     -->
 <!-- ═══════════════════════════════════════════════════════════════════════════ -->
 
 <div align="center">
@@ -288,42 +280,42 @@ rag-chatbot/
 <!--                             RUSSIAN SECTION                              -->
 <!-- ═══════════════════════════════════════════════════════════════════════════ -->
 
-## <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Gear.png" width="28" /> Обзор Проекта
+## <img src="https://cdn.simpleicons.org/aboutdotme/white" width="18" height="18" /> &nbsp;Обзор Проекта
 
-**Neural Core** — это продакшен-система генерации с дополненной выборкой (RAG), работающая на базе **Claude Opus 4.6**. Обеспечивает глубокий анализ ваших личных коллекций документов через технологичный интерфейс с 3D-элементами, плавными анимациями и стилем glassmorphism.
+**Neural Core** — это продакшен-система генерации с дополненной выборкой (RAG), работающая на базе **Claude Opus 4.6**. Обеспечивает глубокий анализ личных коллекций документов через технологичный интерфейс с 3D-элементами, плавными анимациями и стилем glassmorphism.
 
 <br />
 
-## <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Puzzle%20Piece.png" width="28" /> Основные Возможности
+## <img src="https://cdn.simpleicons.org/starship/D97757" width="18" height="18" /> &nbsp;Основные Возможности
 
 <table>
   <tr>
     <td width="50%">
-      <h3><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Crystal%20Ball.png" width="20" /> Интеллект</h3>
+      <h3><img src="https://cdn.simpleicons.org/anthropic/D97757" width="16" height="16" /> &nbsp;Интеллект</h3>
       Использует самую мощную модель <b>Claude Opus 4.6</b> для превосходного анализа и глубокого понимания документов.
     </td>
     <td width="50%">
-      <h3><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Magnifying%20Glass%20Tilted%20Left.png" width="20" /> Глубокий Анализ</h3>
+      <h3><img src="https://cdn.simpleicons.org/elasticsearch/white" width="16" height="16" /> &nbsp;Глубокий Анализ</h3>
       Исследует сложные связи между несколькими документами с высокой точностью через семантический поиск.
     </td>
   </tr>
   <tr>
     <td width="50%">
-      <h3><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/High%20Voltage.png" width="20" /> Продвинутый RAG Движок</h3>
+      <h3><img src="https://cdn.simpleicons.org/apachespark/E25A1C" width="16" height="16" /> &nbsp;Продвинутый RAG Движок</h3>
       Эффективный векторный поиск и управление контекстом для точных и релевантных ответов.
     </td>
     <td width="50%">
-      <h3><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Artist%20Palette.png" width="20" /> Премиальный UI/UX</h3>
+      <h3><img src="https://cdn.simpleicons.org/framer/0055FF" width="16" height="16" /> &nbsp;Премиальный UI/UX</h3>
       Темный, футуристичный интерфейс с 3D-анимациями, переходами Framer Motion и эффектами glassmorphism.
     </td>
   </tr>
   <tr>
     <td width="50%">
-      <h3><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Bookmark%20Tabs.png" width="20" /> Умное Цитирование</h3>
+      <h3><img src="https://cdn.simpleicons.org/bookstack/white" width="16" height="16" /> &nbsp;Умное Цитирование</h3>
       Автоматическое отслеживание источников и ссылки на конкретные разделы для полной прозрачности.
     </td>
     <td width="50%">
-      <h3><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Locked.png" width="20" /> Безопасность</h3>
+      <h3><img src="https://cdn.simpleicons.org/letsencrypt/FFB020" width="16" height="16" /> &nbsp;Безопасность</h3>
       Конфигурация через переменные окружения для защиты API-ключей и безопасной обработки данных.
     </td>
   </tr>
@@ -331,7 +323,7 @@ rag-chatbot/
 
 <br />
 
-## <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Clapper%20Board.png" width="28" /> Демонстрация
+## <img src="https://cdn.simpleicons.org/youtube/FF0000" width="18" height="18" /> &nbsp;Демонстрация
 
 <div align="center">
 
@@ -341,29 +333,29 @@ rag-chatbot/
 
   <br /><br />
 
-  > Замените ссылку выше на URL вашего загруженного видео.
+  <sup>Замените ссылку выше на URL вашего загруженного видео.</sup>
 
 </div>
 
 <br />
 
-## <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Camera%20with%20Flash.png" width="28" /> Скриншоты
+## <img src="https://cdn.simpleicons.org/sharp/white" width="18" height="18" /> &nbsp;Скриншоты
 
 <div align="center">
 
-  <img src="./frontend/public/scrinshots/landing-page.png" alt="Главная страница" width="90%" style="border-radius: 12px;" />
+  <img src="./frontend/public/scrinshots/landing-page.png" alt="Главная страница" width="90%" />
   <br />
   <sup><b>Главная страница</b> — 3D-маскот робот, карточки возможностей и боковая панель разговоров</sup>
 
   <br /><br />
 
-  <img src="./frontend/public/scrinshots/chat-page.png" alt="Чат и анализ документов" width="90%" style="border-radius: 12px;" />
+  <img src="./frontend/public/scrinshots/chat-page.png" alt="Чат и анализ документов" width="90%" />
   <br />
   <sup><b>Интерфейс чата</b> — Семантический анализ документов со структурированным выводом и цитированием</sup>
 
   <br /><br />
 
-  <img src="./frontend/public/scrinshots/profile=page.png" alt="Профиль пользователя" width="90%" style="border-radius: 12px;" />
+  <img src="./frontend/public/scrinshots/profile=page.png" alt="Профиль пользователя" width="90%" />
   <br />
   <sup><b>Панель профиля</b> — Телеметрия пользователя, история разговоров и отслеживание активности</sup>
 
@@ -371,7 +363,7 @@ rag-chatbot/
 
 <br />
 
-## <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Hammer%20and%20Wrench.png" width="28" /> Технологический Стек
+## <img src="https://cdn.simpleicons.org/stackoverflow/F58025" width="18" height="18" /> &nbsp;Технологический Стек
 
 <div align="center">
 
@@ -420,7 +412,7 @@ rag-chatbot/
 
 <br />
 
-## <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Rocket.png" width="28" /> Начало Работы
+## <img src="https://cdn.simpleicons.org/windowsterminal/white" width="18" height="18" /> &nbsp;Начало Работы
 
 ### Требования
 
