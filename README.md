@@ -81,13 +81,7 @@
 
 <div align="center">
 
-  <a href="YOUR_VIDEO_URL_HERE">
-    <img src="https://img.shields.io/badge/-%E2%96%B6%20Watch%20Demo%20Video-FF4500?style=for-the-badge&logo=youtube&logoColor=white" alt="Watch Demo" />
-  </a>
-
-  <br /><br />
-
-  <sup>Replace the link above with your hosted video URL, or embed the <code>video.mp4</code> from the screenshots folder.</sup>
+https://github.com/user-attachments/assets/3fef3e85-a9a6-4264-bbcc-6d8165345d6a
 
 </div>
 
@@ -327,13 +321,7 @@ rag-chatbot/
 
 <div align="center">
 
-  <a href="YOUR_VIDEO_URL_HERE">
-    <img src="https://img.shields.io/badge/-%E2%96%B6%20Смотреть%20Видео-FF4500?style=for-the-badge&logo=youtube&logoColor=white" alt="Watch Demo" />
-  </a>
-
-  <br /><br />
-
-  <sup>Замените ссылку выше на URL вашего загруженного видео.</sup>
+https://github.com/user-attachments/assets/3fef3e85-a9a6-4264-bbcc-6d8165345d6a
 
 </div>
 

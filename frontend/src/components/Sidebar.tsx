@@ -170,9 +170,11 @@ export default function Sidebar({
                                     </p>
                                     <AnimatePresence>
                                         {items.map((conv) => (
-                                            <motion.button
+                                            <motion.div
                                                 key={conv.id}
                                                 layout
+                                                role="button"
+                                                tabIndex={0}
                                                 initial={{ opacity: 0, y: 6 }}
                                                 animate={{ opacity: 1, y: 0 }}
                                                 exit={{
@@ -242,7 +244,7 @@ export default function Sidebar({
                                                 >
                                                     <Trash2 size={13} />
                                                 </button>
-                                            </motion.button>
+                                            </motion.div>
                                         ))}
                                     </AnimatePresence>
                                 </div>
