@@ -93,4 +93,42 @@ public class AuthController {
                 "createdAt", user.getCreatedAt().toString()
         ));
     }
+
+    @PutMapping("/profile")
+    public ResponseEntity<?> updateProfile(@RequestBody Map<String, String> request) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getPrincipal())) {
+            return ResponseEntity.status(401).body(Map.of("error", "Not authenticated"));
+        }
+
+        String currentUsername = auth.getName();
+        User user = userRepository.findByUsername(currentUsername)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        String newUsername = request.get("username");
+        if (newUsername != null && !newUsername.isBlank() && !newUsername.equals(currentUsername)) {
+            if (userRepository.existsByUsername(newUsername)) {
+                return ResponseEntity.badRequest().body(Map.of("error", "Username already taken"));
+            }
+            user.setUsername(newUsername);
+        }
+
+        String newEmail = request.get("email");
+        if (newEmail != null && !newEmail.isBlank() && !newEmail.equals(user.getEmail())) {
+            if (userRepository.existsByEmail(newEmail)) {
+                return ResponseEntity.badRequest().body(Map.of("error", "Email already taken"));
+            }
+            user.setEmail(newEmail);
+        }
+
+        userRepository.save(user);
+
+        // Re-issue token with potentially new username
+        String token = jwtUtil.generateToken(user.getUsername(), false);
+        return ResponseEntity.ok(Map.of(
+                "token", token,
+                "username", user.getUsername(),
+                "email", user.getEmail()
+        ));
+    }
 }

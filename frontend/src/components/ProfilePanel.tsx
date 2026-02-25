@@ -163,7 +163,7 @@ export default function ProfilePanel({
                 {/* HERO BANNER                                     */}
                 {/* ═══════════════════════════════════════════════ */}
                 <motion.div variants={stagger.item} className="relative mb-10">
-                    <div className="relative rounded-3xl overflow-hidden border border-white/[0.06]" style={{ background: 'linear-gradient(160deg, #1a0b2e 0%, #0e0e11 40%, #131318 100%)' }}>
+                    <div className="relative rounded-3xl overflow-hidden border border-white/[0.06]" style={{ background: 'linear-gradient(160deg, #131313 0%, #0e0e0e 40%, #0a0a0a 100%)' }}>
                         {/* Subtle animated mesh */}
                         <div className="absolute inset-0 overflow-hidden">
                             <motion.div
