@@ -163,20 +163,20 @@ export default function ProfilePanel({
                 {/* HERO BANNER                                     */}
                 {/* ═══════════════════════════════════════════════ */}
                 <motion.div variants={stagger.item} className="relative mb-10">
-                    <div className="relative rounded-3xl overflow-hidden border border-white/[0.06]" style={{ background: 'linear-gradient(160deg, #131313 0%, #0e0e0e 40%, #0a0a0a 100%)' }}>
+                    <div className="relative rounded-3xl overflow-hidden border border-white/[0.08]" style={{ background: 'linear-gradient(160deg, #151515 0%, #111111 40%, #0d0d0d 100%)' }}>
                         {/* Subtle animated mesh */}
                         <div className="absolute inset-0 overflow-hidden">
                             <motion.div
                                 animate={{ x: [0, 30, 0], y: [0, -15, 0], opacity: [0.4, 0.6, 0.4] }}
                                 transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
                                 className="absolute -top-16 -left-16 w-48 h-48 rounded-full"
-                                style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 70%)' }}
+                                style={{ background: 'radial-gradient(circle, rgba(249,115,22,0.06) 0%, transparent 70%)' }}
                             />
                             <motion.div
                                 animate={{ x: [0, -20, 0], y: [0, 10, 0], opacity: [0.3, 0.5, 0.3] }}
                                 transition={{ duration: 25, repeat: Infinity, ease: 'easeInOut' }}
                                 className="absolute -bottom-8 -right-8 w-40 h-40 rounded-full"
-                                style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%)' }}
+                                style={{ background: 'radial-gradient(circle, rgba(249,115,22,0.04) 0%, transparent 70%)' }}
                             />
                         </div>
 
@@ -234,8 +234,8 @@ export default function ProfilePanel({
 
                                 {/* Status line */}
                                 <div className="flex items-center justify-center md:justify-start gap-2 mt-3">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse shadow-[0_0_8px_rgba(249,115,22,0.6)]" />
-                                    <span className="text-xs text-zinc-600">Neural Core Online</span>
+                                    <div className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse shadow-[0_0_12px_rgba(249,115,22,0.8)]" />
+                                    <span className="text-xs text-zinc-500">Neural Core Online</span>
                                 </div>
                             </div>
                         </div>
@@ -246,48 +246,48 @@ export default function ProfilePanel({
                 {/* STATS GRID                                      */}
                 {/* ═══════════════════════════════════════════════ */}
                 <motion.div variants={stagger.item} className="mb-8">
-                    <h2 className="text-xs font-medium text-zinc-600 uppercase tracking-widest pl-1 mb-4">Telemetry</h2>
+                    <h2 className="text-xs font-medium text-zinc-500 uppercase tracking-widest pl-1 mb-4">Telemetry</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         {/* Stat 1: Conversations */}
-                        <SpotlightCard className="p-5 rounded-2xl bg-[#0e0e11]/60 border border-white/[0.05] backdrop-blur-xl group cursor-default" spotlightColor="rgba(255,255,255,0.03)">
+                        <SpotlightCard className="p-5 rounded-2xl bg-white/[0.03] border border-white/[0.07] backdrop-blur-xl group cursor-default" spotlightColor="rgba(249,115,22,0.04)">
                             <div className="flex items-center gap-3 mb-4">
-                                <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-white/[0.03] border border-white/[0.06] group-hover:bg-white/[0.06] transition-colors text-zinc-400">
+                                <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-orange-500/[0.06] border border-orange-500/15 group-hover:bg-orange-500/10 transition-colors text-orange-400">
                                     <IconThreads size={16} />
                                 </div>
-                                <span className="text-xs text-zinc-500 uppercase tracking-wider font-medium">Threads</span>
+                                <span className="text-xs text-zinc-400 uppercase tracking-wider font-medium">Threads</span>
                             </div>
-                            <div className="text-3xl font-light text-zinc-200 mb-1">
+                            <div className="text-4xl md:text-5xl font-light text-zinc-50 mb-1">
                                 <TickingNumber value={conversations.length} delayMs={200} />
                             </div>
-                            <p className="text-xs text-zinc-600">Conversation history</p>
+                            <p className="text-xs text-zinc-500">Conversation history</p>
                         </SpotlightCard>
 
                         {/* Stat 2: Indexed Files */}
-                        <SpotlightCard className="p-5 rounded-2xl bg-[#0e0e11]/60 border border-white/[0.05] backdrop-blur-xl group cursor-default" spotlightColor="rgba(255,255,255,0.03)">
+                        <SpotlightCard className="p-5 rounded-2xl bg-white/[0.03] border border-white/[0.07] backdrop-blur-xl group cursor-default" spotlightColor="rgba(249,115,22,0.04)">
                             <div className="flex items-center gap-3 mb-4">
-                                <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-white/[0.03] border border-white/[0.06] group-hover:bg-white/[0.06] transition-colors text-zinc-400">
+                                <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-orange-500/[0.06] border border-orange-500/15 group-hover:bg-orange-500/10 transition-colors text-orange-400">
                                     <IconCube size={16} />
                                 </div>
-                                <span className="text-xs text-zinc-500 uppercase tracking-wider font-medium">Indexed</span>
+                                <span className="text-xs text-zinc-400 uppercase tracking-wider font-medium">Indexed</span>
                             </div>
-                            <div className="text-3xl font-light text-zinc-200 mb-1">
+                            <div className="text-4xl md:text-5xl font-light text-zinc-50 mb-1">
                                 <TickingNumber value={documents.length} delayMs={400} />
                             </div>
-                            <p className="text-xs text-zinc-600">Knowledge base</p>
+                            <p className="text-xs text-zinc-500">Knowledge base</p>
                         </SpotlightCard>
 
                         {/* Stat 3: Total Messages */}
-                        <SpotlightCard className="p-5 rounded-2xl bg-[#0e0e11]/60 border border-white/[0.05] backdrop-blur-xl group cursor-default" spotlightColor="rgba(255,255,255,0.03)">
+                        <SpotlightCard className="p-5 rounded-2xl bg-white/[0.03] border border-white/[0.07] backdrop-blur-xl group cursor-default" spotlightColor="rgba(249,115,22,0.04)">
                             <div className="flex items-center gap-3 mb-4">
-                                <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-white/[0.03] border border-white/[0.06] group-hover:bg-white/[0.06] transition-colors text-zinc-400">
+                                <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-orange-500/[0.06] border border-orange-500/15 group-hover:bg-orange-500/10 transition-colors text-orange-400">
                                     <IconPulse size={16} />
                                 </div>
-                                <span className="text-xs text-zinc-500 uppercase tracking-wider font-medium">Messages</span>
+                                <span className="text-xs text-zinc-400 uppercase tracking-wider font-medium">Messages</span>
                             </div>
-                            <div className="text-3xl font-light text-zinc-200 mb-1">
+                            <div className="text-4xl md:text-5xl font-light text-zinc-50 mb-1">
                                 <TickingNumber value={totalMessages} delayMs={600} />
                             </div>
-                            <p className="text-xs text-zinc-600">Total interactions</p>
+                            <p className="text-xs text-zinc-500">Total interactions</p>
                         </SpotlightCard>
                     </div>
                 </motion.div>
@@ -296,8 +296,8 @@ export default function ProfilePanel({
                 {/* ACTIVITY FEED                                   */}
                 {/* ═══════════════════════════════════════════════ */}
                 <motion.div variants={stagger.item} className="mb-8">
-                    <h2 className="text-xs font-medium text-zinc-600 uppercase tracking-widest pl-1 mb-4">Recent Activity</h2>
-                    <div className="bg-[#0e0e11]/50 border border-white/[0.05] rounded-2xl backdrop-blur-xl overflow-hidden">
+                    <h2 className="text-xs font-medium text-zinc-500 uppercase tracking-widest pl-1 mb-4">Recent Activity</h2>
+                    <div className="bg-white/[0.03] border border-white/[0.07] rounded-2xl backdrop-blur-xl overflow-hidden">
                         {conversations.length === 0 ? (
                             <div className="p-8 text-center">
                                 <div className="text-zinc-600 mx-auto mb-3 w-5 h-5 flex items-center justify-center">
@@ -339,12 +339,12 @@ export default function ProfilePanel({
                 {/* PREFERENCES                                     */}
                 {/* ═══════════════════════════════════════════════ */}
                 <motion.div variants={stagger.item} className="mb-8">
-                    <h2 className="text-xs font-medium text-zinc-600 uppercase tracking-widest pl-1 mb-4">Preferences</h2>
-                    <div className="bg-[#0e0e11]/50 border border-white/[0.05] rounded-2xl backdrop-blur-xl overflow-hidden divide-y divide-white/[0.03]">
+                    <h2 className="text-xs font-medium text-zinc-500 uppercase tracking-widest pl-1 mb-4">Preferences</h2>
+                    <div className="bg-white/[0.03] border border-white/[0.07] rounded-2xl backdrop-blur-xl overflow-hidden divide-y divide-white/[0.05]">
                         {/* Notifications */}
                         <div className="p-5 flex items-center justify-between hover:bg-white/[0.02] transition-colors">
                             <div className="flex items-center gap-4">
-                                <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-white/[0.03] border border-white/[0.06] text-zinc-400">
+                                <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-orange-500/[0.06] border border-orange-500/15 text-orange-400">
                                     <IconWave size={16} />
                                 </div>
                                 <div>
@@ -358,7 +358,7 @@ export default function ProfilePanel({
                         {/* Telemetry */}
                         <div className="p-5 flex items-center justify-between hover:bg-white/[0.02] transition-colors">
                             <div className="flex items-center gap-4">
-                                <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-white/[0.03] border border-white/[0.06] text-zinc-400">
+                                <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-orange-500/[0.06] border border-orange-500/15 text-orange-400">
                                     <IconLock size={16} />
                                 </div>
                                 <div>
@@ -375,7 +375,7 @@ export default function ProfilePanel({
                 {/* DANGER ZONE                                     */}
                 {/* ═══════════════════════════════════════════════ */}
                 <motion.div variants={stagger.item} className="mb-8">
-                    <h2 className="text-xs font-medium text-zinc-600 uppercase tracking-widest pl-1 mb-4">Security</h2>
+                    <h2 className="text-xs font-medium text-zinc-500 uppercase tracking-widest pl-1 mb-4">Security</h2>
 
                     <div className="rounded-2xl overflow-hidden border border-white/[0.04]" style={{ background: 'linear-gradient(160deg, rgba(255,255,255,0.02) 0%, #0e0e11 100%)' }}>
                         <div className="p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
@@ -417,7 +417,7 @@ export default function ProfilePanel({
 
                 {/* Footer */}
                 <motion.div variants={stagger.item} className="py-6 text-center border-t border-white/[0.03]">
-                    <p className="text-xs text-zinc-700">Neural Core v1.0 — RAG Engine</p>
+                    <p className="text-xs text-zinc-600">Neural Core v1.0 — RAG Engine</p>
                 </motion.div>
 
             </motion.div>
@@ -432,17 +432,17 @@ function MinimalToggle({ checked, onChange }: { checked: boolean, onChange: () =
             onClick={onChange}
             className="w-11 h-6 rounded-full relative transition-colors duration-500 outline-none cursor-pointer"
             style={{
-                background: checked ? '#ffffff' : 'rgba(255,255,255,0.08)',
+                background: checked ? 'rgba(249,115,22,0.9)' : 'rgba(255,255,255,0.08)',
                 border: '1px solid',
-                borderColor: checked ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.05)',
-                boxShadow: checked ? '0 0 12px rgba(255,255,255,0.1)' : 'none'
+                borderColor: checked ? 'rgba(249,115,22,0.7)' : 'rgba(255,255,255,0.06)',
+                boxShadow: checked ? '0 0 12px rgba(249,115,22,0.2)' : 'none'
             }}
         >
             <motion.div
                 className="w-4 h-4 rounded-full absolute top-[3px]"
                 animate={{ left: checked ? '22px' : '4px' }}
                 style={{
-                    backgroundColor: checked ? '#000000' : '#52525b',
+                    backgroundColor: checked ? '#ffffff' : '#52525b',
                 }}
                 transition={{ type: 'spring', stiffness: 500, damping: 30 }}
             />

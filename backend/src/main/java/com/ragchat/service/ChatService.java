@@ -7,6 +7,7 @@ import com.ragchat.model.ChatRequest;
 import com.ragchat.model.ChatResponse;
 import com.ragchat.model.Conversation;
 import com.ragchat.model.DocumentChunk;
+import com.ragchat.model.MessageEntity;
 import com.ragchat.repository.ConversationRepository;
 import com.ragchat.repository.MessageRepository;
 import org.slf4j.Logger;
@@ -67,23 +68,25 @@ public class ChatService {
                 });
 
         // Save User Message
-        com.ragchat.model.MessageEntity userMsgEntity = new com.ragchat.model.MessageEntity(
+        MessageEntity userMsgEntity = new MessageEntity(
                 conversationId, "user", request.getMessage(), null, LocalDateTime.now()
         );
         messageRepository.save(userMsgEntity);
 
-        // Vector Search
-        List<DocumentChunk> relevantChunks = Collections.emptyList();
-        Map<String, Double> scores = Collections.emptyMap();
+        // Vector Search — single query returns both chunks and scores
+        List<Map.Entry<DocumentChunk, Double>> searchResults = Collections.emptyList();
         int chunkCount = vectorStoreService.getChunkCount(conversationId);
 
         if (chunkCount > 0) {
             double[] queryEmbedding = embeddingService.embed(request.getMessage());
-            relevantChunks = vectorStoreService.search(conversationId, queryEmbedding);
-            scores = vectorStoreService.searchWithScores(conversationId, queryEmbedding);
+            searchResults = vectorStoreService.searchWithScores(conversationId, queryEmbedding);
         }
 
-        final Map<String, Double> finalScores = scores;
+        List<DocumentChunk> relevantChunks = searchResults.stream()
+                .map(Map.Entry::getKey)
+                .toList();
+        final Map<String, Double> finalScores = searchResults.stream()
+                .collect(Collectors.toMap(e -> e.getKey().getId(), Map.Entry::getValue));
 
         // Limit context to ~40000 chars to leverage Claude Opus's large context window
         StringBuilder contextBuilder = new StringBuilder();
@@ -104,7 +107,7 @@ public class ChatService {
         String context = contextBuilder.toString();
 
         // Fetch history for context
-        List<com.ragchat.model.MessageEntity> historyEntities = messageRepository.findByConversationIdOrderByTimestampAsc(conversationId);
+        List<MessageEntity> historyEntities = messageRepository.findByConversationIdOrderByTimestampAsc(conversationId);
         List<Conversation.Message> history = historyEntities.stream()
                 .map(e -> new Conversation.Message(e.getRole(), e.getContent(), e.getSources(), e.getTimestamp()))
                 .toList();
@@ -129,7 +132,7 @@ public class ChatService {
                 .toList();
 
         // Save Assistant Message
-        com.ragchat.model.MessageEntity assistantMsgEntity = new com.ragchat.model.MessageEntity(
+        MessageEntity assistantMsgEntity = new MessageEntity(
                 conversationId, "assistant", answer, sources, LocalDateTime.now()
         );
         messageRepository.save(assistantMsgEntity);

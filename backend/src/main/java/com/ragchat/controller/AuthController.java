@@ -6,6 +6,9 @@ import com.ragchat.dto.RegisterRequest;
 import com.ragchat.model.User;
 import com.ragchat.repository.UserRepository;
 import com.ragchat.util.JwtUtil;
+import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,6 +22,8 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
+
+    private static final Logger log = LoggerFactory.getLogger(AuthController.class);
 
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
@@ -36,7 +41,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request) {
         try {
             if (userRepository.existsByUsername(request.getUsername())) {
                 return ResponseEntity.badRequest().body(Map.of("error", "Username already exists"));
@@ -54,13 +59,13 @@ public class AuthController {
             String token = jwtUtil.generateToken(user.getUsername(), false);
             return ResponseEntity.ok(new AuthResponse(token, user.getUsername(), user.getEmail()));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Registration error: {}", e.getMessage(), e);
             return ResponseEntity.status(500).body(Map.of("error", e.getMessage() != null ? e.getMessage() : "Registration failed"));
         }
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())

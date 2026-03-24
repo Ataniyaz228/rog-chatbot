@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,7 +29,10 @@ public class VectorStoreService {
         chunkRepository.save(chunk);
     }
 
-    public List<DocumentChunk> search(String conversationId, double[] queryEmbedding) {
+    /**
+     * Search for relevant chunks and return both chunks and their scores in a single query.
+     */
+    public List<Map.Entry<DocumentChunk, Double>> searchWithScores(String conversationId, double[] queryEmbedding) {
         List<DocumentChunk> chunks = chunkRepository.findByConversationId(conversationId);
         if (chunks.isEmpty()) return Collections.emptyList();
 
@@ -38,19 +40,7 @@ public class VectorStoreService {
                 .map(chunk -> Map.entry(chunk, cosineSimilarity(queryEmbedding, chunk.getEmbedding())))
                 .sorted((a, b) -> Double.compare(b.getValue(), a.getValue()))
                 .limit(topK)
-                .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
-    }
-
-    public Map<String, Double> searchWithScores(String conversationId, double[] queryEmbedding) {
-        List<DocumentChunk> chunks = chunkRepository.findByConversationId(conversationId);
-        if (chunks.isEmpty()) return Collections.emptyMap();
-
-        return chunks.stream()
-                .map(chunk -> Map.entry(chunk.getId(), cosineSimilarity(queryEmbedding, chunk.getEmbedding())))
-                .sorted((a, b) -> Double.compare(b.getValue(), a.getValue()))
-                .limit(topK)
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a, LinkedHashMap::new));
     }
 
     public void removeDocument(String conversationId, String documentId) {
@@ -58,7 +48,7 @@ public class VectorStoreService {
     }
 
     public int getChunkCount(String conversationId) {
-        return chunkRepository.findByConversationId(conversationId).size();
+        return chunkRepository.countByConversationId(conversationId);
     }
 
     private double cosineSimilarity(double[] a, double[] b) {

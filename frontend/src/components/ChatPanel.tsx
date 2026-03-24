@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useEffect, useState, FormEvent, useCallback } from 'react';
-import { motion, AnimatePresence, useSpring, useTransform } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { IconSend as Send, IconPaperclip as Paperclip, IconFile as FileText, IconUpload as Upload, IconSearch as Search, IconThreads as MessageSquare, IconPlus as Plus, IconNetwork as Network, IconCpu as Cpu, IconFileSearch as FileSearch } from './icons';
 import MessageBubble from './MessageBubble';
 import DocumentUpload from './DocumentUpload';
@@ -37,6 +37,7 @@ export default function ChatPanel({
 }: ChatPanelProps) {
     const [input, setInput] = useState('');
     const [showUpload, setShowUpload] = useState(false);
+    const [isFocused, setIsFocused] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLTextAreaElement>(null);
     const scrollRef = useRef<HTMLDivElement>(null);
@@ -109,7 +110,7 @@ export default function ChatPanel({
                                 </div>
 
                                 <motion.h1
-                                    className="text-3xl font-bold mb-1 tracking-tight bg-clip-text text-transparent bg-gradient-to-br from-white via-zinc-200 to-zinc-500 inline-block drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]"
+                                    className="text-4xl md:text-5xl font-bold mb-2 tracking-tight bg-clip-text text-transparent bg-gradient-to-br from-white via-zinc-200 to-zinc-500 inline-block drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]"
                                     initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ duration: 0.8, delay: 0.2 }}
@@ -117,27 +118,28 @@ export default function ChatPanel({
                                     Neural Core
                                 </motion.h1>
                                 <p
-                                    className="text-sm leading-relaxed mb-3"
+                                    className="text-sm md:text-base leading-relaxed mb-2"
                                     style={{ color: 'var(--text-secondary)' }}
                                 >
                                     Upload documents and ask questions about their content.
-                                    <br />
-                                    Powered by AI with intelligent document analysis.
+                                </p>
+                                <p className="text-xs text-zinc-500 mb-5">
+                                    Powered by AI with intelligent document analysis ↓
                                 </p>
 
                                 {/* Asymmetrical Bento Box */}
                                 <div className="w-full max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-3 mb-3">
                                     {/* Main Large Card */}
-                                    <SpotlightCard className="md:col-span-8 p-5 rounded-[24px] flex flex-col justify-between text-left group cursor-pointer bg-white/[0.03] backdrop-blur-xl border border-white/10 hover:border-white/20 transition-all duration-500" spotlightColor="rgba(255, 255, 255, 0.05)" onClick={() => {
+                                    <SpotlightCard className="md:col-span-8 p-5 rounded-[24px] flex flex-col justify-between text-left group cursor-pointer bg-white/[0.04] backdrop-blur-xl border border-white/[0.08] hover:border-orange-500/25 transition-all duration-500 hover:shadow-[0_0_30px_rgba(249,115,22,0.06)]" spotlightColor="rgba(249, 115, 22, 0.06)" onClick={() => {
                                         setInput("Analyze my uploaded documents");
                                         inputRef.current?.focus();
                                     }}>
                                         <div>
-                                            <div className="w-10 h-10 rounded-xl mb-3 flex items-center justify-center bg-orange-500/5 border border-orange-500/10 group-hover:bg-orange-500/20 transition-colors">
-                                                <Network size={20} className="text-orange-500/80 group-hover:text-orange-400 transition-colors" />
+                                            <div className="w-10 h-10 rounded-xl mb-3 flex items-center justify-center bg-orange-500/10 border border-orange-500/20 group-hover:bg-orange-500/25 transition-colors shadow-[0_0_15px_rgba(249,115,22,0.1)]">
+                                                <Network size={20} className="text-orange-400 group-hover:text-orange-300 transition-colors" />
                                             </div>
-                                            <h3 className="text-lg font-semibold mb-2 text-white group-hover:text-zinc-100 transition-colors">Deep Document Analysis</h3>
-                                            <p className="text-sm leading-relaxed text-zinc-400 group-hover:text-zinc-300">
+                                            <h3 className="text-lg font-semibold mb-2 text-zinc-100 group-hover:text-white transition-colors">Deep Document Analysis</h3>
+                                            <p className="text-sm leading-relaxed text-zinc-400 group-hover:text-zinc-200">
                                                 Upload complex PDFs, CSVs, or text. The RAG engine creates a semantic vector space for hyper-specific cross-file queries.
                                             </p>
                                         </div>
@@ -145,20 +147,20 @@ export default function ChatPanel({
 
                                     {/* Side Stacked Cards */}
                                     <div className="md:col-span-4 flex flex-col gap-3">
-                                        <SpotlightCard className="flex-1 p-5 rounded-[24px] flex flex-col justify-center items-start group cursor-pointer bg-white/[0.03] backdrop-blur-xl border border-white/10 hover:border-white/20 transition-all duration-500" spotlightColor="rgba(255, 255, 255, 0.05)" onClick={() => {
+                                        <SpotlightCard className="flex-1 p-5 rounded-[24px] flex flex-col justify-center items-start group cursor-pointer bg-white/[0.04] backdrop-blur-xl border border-white/[0.08] hover:border-orange-500/25 transition-all duration-500 hover:shadow-[0_0_20px_rgba(249,115,22,0.06)]" spotlightColor="rgba(249, 115, 22, 0.06)" onClick={() => {
                                             setInput("Explain the core concepts briefly");
                                             inputRef.current?.focus();
                                         }}>
-                                            <Cpu size={20} className="mb-3 text-orange-500/70 group-hover:text-orange-400 transition-colors" />
-                                            <h4 className="text-sm font-semibold text-zinc-100 group-hover:text-white">Quick Synthesize</h4>
+                                            <Cpu size={20} className="mb-3 text-orange-400 group-hover:text-orange-300 transition-colors" />
+                                            <h4 className="text-sm font-semibold text-zinc-200 group-hover:text-white">Quick Synthesize</h4>
                                         </SpotlightCard>
 
-                                        <SpotlightCard className="flex-1 p-5 rounded-[24px] flex flex-col justify-center items-start group cursor-pointer bg-white/[0.03] backdrop-blur-xl border border-white/10 hover:border-white/20 transition-all duration-500" spotlightColor="rgba(255, 255, 255, 0.05)" onClick={() => {
+                                        <SpotlightCard className="flex-1 p-5 rounded-[24px] flex flex-col justify-center items-start group cursor-pointer bg-white/[0.04] backdrop-blur-xl border border-white/[0.08] hover:border-orange-500/25 transition-all duration-500 hover:shadow-[0_0_20px_rgba(249,115,22,0.06)]" spotlightColor="rgba(249, 115, 22, 0.06)" onClick={() => {
                                             setInput("Find the most important metrics");
                                             inputRef.current?.focus();
                                         }}>
-                                            <FileSearch size={20} className="mb-3 text-orange-500/70 group-hover:text-orange-400 transition-colors" />
-                                            <h4 className="text-sm font-semibold text-zinc-100 group-hover:text-white">Data Extraction</h4>
+                                            <FileSearch size={20} className="mb-3 text-orange-400 group-hover:text-orange-300 transition-colors" />
+                                            <h4 className="text-sm font-semibold text-zinc-200 group-hover:text-white">Data Extraction</h4>
                                         </SpotlightCard>
                                     </div>
                                 </div>
@@ -242,15 +244,15 @@ export default function ChatPanel({
             {/* Floating Island Input */}
             <div className="absolute bottom-8 left-1/2 -translate-x-1/2 w-full max-w-3xl px-6 z-30 group pointer-events-none">
                 <SpotlightCard
-                    className="w-full rounded-[2rem] shadow-2xl pointer-events-auto"
+                    className={`w-full rounded-[2rem] shadow-2xl pointer-events-auto input-glow-border ${isFocused || input.trim() ? 'active' : ''}`}
                     spotlightColor="rgba(255, 255, 255, 0.03)"
                 >
                     <form
                         onSubmit={handleSubmit}
-                        className="w-full flex items-end gap-3 p-2.5 rounded-[2rem] border relative overflow-hidden transition-all duration-500 bg-[#09090b]/40 backdrop-blur-2xl"
+                        className="w-full flex items-end gap-3 p-2.5 rounded-[2rem] border relative overflow-hidden transition-all duration-500 bg-[#09090b]/60 backdrop-blur-2xl"
                         style={{
-                            borderColor: input.trim() ? 'rgba(249,115,22,0.3)' : 'rgba(255,255,255,0.05)',
-                            boxShadow: input.trim() ? '0 8px 32px rgba(249,115,22,0.1)' : '0 10px 40px rgba(0,0,0,0.8)'
+                            borderColor: input.trim() ? 'rgba(249,115,22,0.25)' : isFocused ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.05)',
+                            boxShadow: input.trim() ? '0 8px 32px rgba(249,115,22,0.08)' : '0 10px 40px rgba(0,0,0,0.8)'
                         }}
                     >
                         <button
@@ -266,6 +268,8 @@ export default function ChatPanel({
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             onKeyDown={handleKeyDown}
+                            onFocus={() => setIsFocused(true)}
+                            onBlur={() => setIsFocused(false)}
                             placeholder="Message Neural Core..."
                             rows={1}
                             className="flex-1 bg-transparent outline-none resize-none text-[15px] py-3 px-2 leading-relaxed text-zinc-200 placeholder:text-zinc-600 font-sans"
@@ -278,7 +282,7 @@ export default function ChatPanel({
                             type="submit"
                             disabled={!input.trim() || isLoading}
                             whileTap={{ scale: 0.95 }}
-                            className={`p-2.5 rounded-[14px] transition-all duration-300 flex-shrink-0 cursor-pointer flex items-center justify-center relative z-10 ${input.trim() ? 'bg-orange-500 text-white hover:bg-orange-400 shadow-[0_0_20px_rgba(249,115,22,0.4)]' : 'bg-white/5 text-zinc-500'}`}
+                            className={`p-2.5 rounded-[14px] transition-all duration-300 flex-shrink-0 cursor-pointer flex items-center justify-center relative z-10 ${input.trim() ? 'bg-orange-500 text-white hover:bg-orange-400 shadow-[0_0_20px_rgba(249,115,22,0.4)] send-pulse' : 'bg-white/5 text-zinc-500'}`}
                             style={{
                                 opacity: isLoading ? 0.5 : 1,
                             }}

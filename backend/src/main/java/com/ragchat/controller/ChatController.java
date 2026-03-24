@@ -1,21 +1,25 @@
 package com.ragchat.controller;
 
 import com.ragchat.model.ChatRequest;
-import com.ragchat.model.ChatResponse;
 import com.ragchat.model.Conversation;
 import com.ragchat.model.User;
 import com.ragchat.repository.UserRepository;
 import com.ragchat.service.ChatService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
 public class ChatController {
+
+    private static final Logger log = LoggerFactory.getLogger(ChatController.class);
 
     private final ChatService chatService;
     private final UserRepository userRepository;
@@ -39,10 +43,10 @@ public class ChatController {
             String userId = getCurrentUserId();
             return ResponseEntity.ok(chatService.chat(request, userId));
         } catch (Exception e) {
-            e.printStackTrace();
-            java.util.Map<String, String> error = new java.util.HashMap<>();
-            error.put("error", e.getMessage());
-            error.put("cause", e.getCause() != null ? e.getCause().getMessage() : "unknown");
+            log.error("Chat error: {}", e.getMessage(), e);
+            Map<String, String> error = Map.of(
+                    "error", e.getMessage() != null ? e.getMessage() : "Unknown error"
+            );
             return ResponseEntity.status(500).body(error);
         }
     }
@@ -54,14 +58,30 @@ public class ChatController {
     }
 
     @GetMapping("/conversations/{id}")
-    public ResponseEntity<Conversation> getConversation(@PathVariable String id) {
+    public ResponseEntity<?> getConversation(@PathVariable String id) {
+        String userId = getCurrentUserId();
         Conversation conversation = chatService.getConversation(id);
         if (conversation == null) return ResponseEntity.notFound().build();
+
+        // Verify ownership
+        if (!userId.equals(conversation.getUserId())) {
+            return ResponseEntity.status(403).body(Map.of("error", "Access denied"));
+        }
+
         return ResponseEntity.ok(conversation);
     }
 
     @DeleteMapping("/conversations/{id}")
-    public ResponseEntity<Void> deleteConversation(@PathVariable String id) {
+    public ResponseEntity<?> deleteConversation(@PathVariable String id) {
+        String userId = getCurrentUserId();
+        Conversation conversation = chatService.getConversation(id);
+        if (conversation == null) return ResponseEntity.notFound().build();
+
+        // Verify ownership
+        if (!userId.equals(conversation.getUserId())) {
+            return ResponseEntity.status(403).body(Map.of("error", "Access denied"));
+        }
+
         chatService.deleteConversation(id);
         return ResponseEntity.ok().build();
     }

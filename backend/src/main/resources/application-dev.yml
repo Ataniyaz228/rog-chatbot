@@ -1,0 +1,14 @@
+# Development profile — safe defaults for local development
+# Activate with: --spring.profiles.active=dev (or set SPRING_PROFILES_ACTIVE=dev)
+
+spring:
+  datasource:
+    password: 1234
+
+ai:
+  api-key: ${GROQ_API_KEY:your_api_key_here}
+  chat-model: ${AI_MODEL:llama-3.3-70b-versatile}
+  api-base-url: ${AI_BASE_URL:https://api.groq.com/openai/v1}
+
+jwt:
+  secret: DevOnlySecretKeyForLocalDevelopment256BitsLongEnoughForHS256Algorithm!!

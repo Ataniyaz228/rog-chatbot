@@ -10,6 +10,8 @@ import java.util.List;
 public interface DocumentChunkRepository extends JpaRepository<DocumentChunk, String> {
     
     List<DocumentChunk> findByConversationId(String conversationId);
+
+    int countByConversationId(String conversationId);
     
     void deleteByConversationId(String conversationId);
     

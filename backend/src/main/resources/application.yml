@@ -2,12 +2,14 @@ server:
   port: 8081
 
 spring:
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
   application:
     name: rag-chatbot
   datasource:
     url: jdbc:postgresql://localhost:5432/ragchatbot
     username: postgres
-    password: ${DB_PASSWORD:1234}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -32,4 +34,4 @@ rag:
   top-k: 20
 
 jwt:
-  secret: ${JWT_SECRET:NeuralCoreRAGChatbotSecretKeyForJWTTokenGenerationMustBe256Bits}
+  secret: ${JWT_SECRET}

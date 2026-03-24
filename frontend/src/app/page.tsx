@@ -660,7 +660,7 @@ export default function LandingPage() {
 
       {/* ═══ FEATURES ═══ */}
       <section id="features" className="relative py-32 px-6">
-        <div className="max-w-5x1 mx-auto">
+        <div className="max-w-5xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-white tracking-tight mb-4">
               <ScrambleText text="Intelligence at Every Layer" speed={15} />
@@ -715,7 +715,7 @@ export default function LandingPage() {
           </div>
 
           <h2 className="text-4xl md:text-5xl font-bold text-white tracking-tight mb-6">
-            Ready to analyze<br />your documents? 
+            Ready to analyze<br />your documents?
           </h2>
           <p className="text-zinc-400 mb-10 text-lg">Create a free account and start asking questions.</p>
           <Link

@@ -63,7 +63,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const logout = useCallback(() => {
         localStorage.removeItem('auth_token');
-        window.location.href = '/';
+        setToken(null);
+        setUser(null);
+        // Use window.location for a clean state reset after logout
+        window.location.replace('/');
     }, []);
 
     return (

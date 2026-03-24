@@ -75,25 +75,21 @@ function MessageBubble({
             {/* Content */}
             <div className={`max-w-[85%] md:max-w-[75%] min-w-0 ${isUser ? 'order-first' : ''}`}>
                 <div
-                    className={`rounded-2xl px-5 py-4 ${isUser ? 'bg-white/10 border border-white/10 text-white shadow-sm backdrop-blur-sm' : 'bg-white/[0.04] backdrop-blur-xl border border-white/10 text-zinc-200 shadow-xl'}`}
+                    className={`rounded-2xl px-5 py-4 relative ${isUser ? 'bg-gradient-to-br from-orange-500/15 to-amber-600/10 border border-orange-500/20 text-white shadow-lg shadow-orange-500/5 backdrop-blur-sm' : 'bg-white/[0.05] backdrop-blur-xl border border-white/[0.08] text-zinc-200 shadow-xl'}`}
                 >
+                    {/* Accent stripe for messages with sources */}
+                    {!isUser && sources && sources.length > 0 && (
+                        <div className="absolute left-0 top-3 bottom-3 w-[2px] rounded-full bg-gradient-to-b from-orange-500 to-orange-500/30" />
+                    )}
                     {isLoading ? (
-                        <div className="flex items-center gap-3 py-2 px-1">
-                            <motion.div
-                                className="w-3.5 h-3.5 bg-white/70"
-                                animate={{
-                                    scale: [1, 1.4, 1],
-                                    rotate: [0, 90, 180],
-                                    borderRadius: ["20%", "50%", "20%"]
-                                }}
-                                transition={{
-                                    duration: 1.5,
-                                    ease: "easeInOut",
-                                    repeat: Infinity,
-                                }}
-                            />
+                        <div className="flex items-center gap-3 py-3 px-1">
+                            <div className="typing-dots">
+                                <span />
+                                <span />
+                                <span />
+                            </div>
                             <span className="text-xs font-mono tracking-widest uppercase opacity-50 text-zinc-400">
-                                Processing
+                                Thinking
                             </span>
                         </div>
                     ) : isUser ? (
@@ -107,7 +103,7 @@ function MessageBubble({
                             {/* Assistant Header */}
                             {!isUser && (
                                 <div className="flex items-center gap-2 mb-3">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.6)] animate-pulse" />
+                                    <div className="w-1.5 h-1.5 rounded-full bg-orange-500 shadow-[0_0_12px_rgba(249,115,22,0.8)] animate-pulse" />
                                     <div className="text-[10px] font-bold tracking-[0.2em] text-zinc-500 uppercase">
                                         Neural Core
                                     </div>
@@ -207,7 +203,7 @@ function MessageBubble({
                                 onClick={() =>
                                     setExpandedSource(expandedSource === idx ? null : idx)
                                 }
-                                className="source-chip inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs cursor-pointer"
+                                className="source-chip inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs cursor-pointer bg-orange-500/5 border border-orange-500/15 hover:border-orange-500/30 hover:bg-orange-500/10 transition-all"
                             >
                                 <FileText size={11} style={{ color: 'var(--accent)' }} />
                                 <span style={{ color: 'var(--text-secondary)' }}>
@@ -217,7 +213,7 @@ function MessageBubble({
                                     )}
                                 </span>
                                 <span
-                                    className="px-1.5 py-0.5 rounded text-[10px] bg-white/5 text-zinc-400 border border-white/5"
+                                    className="px-1.5 py-0.5 rounded text-[10px] bg-orange-500/10 text-orange-400 border border-orange-500/20 font-medium"
                                 >
                                     {Math.round(source.relevanceScore * 100)}%
                                 </span>

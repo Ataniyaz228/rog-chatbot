@@ -76,9 +76,10 @@ export default function Sidebar({
             transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
             className="h-full flex flex-col relative overflow-hidden shrink-0 z-20"
             style={{
-                background: 'rgba(9, 9, 11, 0.4)', /* Ultra dark minimalist */
-                borderRight: '1px solid rgba(255,255,255,0.05)',
-                backdropFilter: 'blur(20px)',
+                background: 'rgba(10, 10, 14, 0.65)',
+                borderRight: '1px solid rgba(255,255,255,0.08)',
+                backdropFilter: 'blur(24px)',
+                WebkitBackdropFilter: 'blur(24px)',
             }}
         >
             {/* Header */}
@@ -121,7 +122,21 @@ export default function Sidebar({
             <div className="px-4 mb-4 mt-2 w-full">
                 <RippleButton
                     onClick={onNew}
-                    className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 cursor-pointer border border-white/5 text-zinc-300 bg-white/[0.02] hover:bg-white/[0.06] hover:text-white"
+                    className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 cursor-pointer border text-zinc-200 hover:text-white"
+                    style={{
+                        borderColor: 'rgba(249,115,22,0.25)',
+                        background: 'rgba(249,115,22,0.06)',
+                    }}
+                    onMouseEnter={(e) => {
+                        e.currentTarget.style.background = 'rgba(249,115,22,0.12)';
+                        e.currentTarget.style.borderColor = 'rgba(249,115,22,0.4)';
+                        e.currentTarget.style.boxShadow = '0 0 20px rgba(249,115,22,0.15)';
+                    }}
+                    onMouseLeave={(e) => {
+                        e.currentTarget.style.background = 'rgba(249,115,22,0.06)';
+                        e.currentTarget.style.borderColor = 'rgba(249,115,22,0.25)';
+                        e.currentTarget.style.boxShadow = 'none';
+                    }}
                 >
                     <Plus size={16} />
                     {!collapsed && <span>New Conversation</span>}
@@ -188,7 +203,8 @@ export default function Sidebar({
                                                 onClick={() => onSelect(conv.id)}
                                                 className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl mb-0.5 text-left transition-all duration-300 group cursor-pointer relative overflow-hidden`}
                                                 style={{
-                                                    background: activeId === conv.id ? 'rgba(255,255,255,0.03)' : 'transparent',
+                                                    background: activeId === conv.id ? 'rgba(249,115,22,0.08)' : 'transparent',
+                                                    borderLeft: activeId === conv.id ? '2px solid rgba(249,115,22,0.6)' : '2px solid transparent',
                                                 }}
                                                 onMouseEnter={(e) => {
                                                     if (activeId !== conv.id) e.currentTarget.style.background = 'rgba(255,255,255,0.02)';
@@ -216,7 +232,7 @@ export default function Sidebar({
                                                 )}
                                                 <div className="flex-1 min-w-0">
                                                     <p
-                                                        className={`text-sm truncate transition-colors ${activeId === conv.id ? 'text-orange-400' : 'text-zinc-400 group-hover:text-zinc-300'}`}
+                                                        className={`text-sm truncate transition-colors ${activeId === conv.id ? 'text-orange-400 font-medium' : 'text-zinc-300 group-hover:text-zinc-100'}`}
                                                     >
                                                         {conv.title}
                                                     </p>
@@ -298,7 +314,7 @@ export default function Sidebar({
                         className="p-3"
                     >
                         <div
-                            className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs bg-white/[0.02] border border-white/5 text-zinc-500"
+                            className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs bg-orange-500/[0.04] border border-orange-500/10 text-zinc-400"
                         >
                             <Sparkles size={12} className="text-zinc-400" />
                             <span>Neural Core v2</span>
